@@ -1,10 +1,15 @@
+"""
+MakeRecord.py
+此模組提供創造虛擬記帳資料的功能
+"""
+
 import random
 import math
 
-times = 0  # 宣告 虛擬帳目筆數 變數
+times = 0  # 虛擬帳目筆數，用於控制產生的虛擬帳目數量
 Flag = True  # 控制迴圈的旗標
 
-while Flag:  # 旗標控制的迴圈
+while Flag:  # 旗標控制的無窮迴圈
     times = int(input("輸入要創造的帳目數量 "))  # 詢問創造虛擬帳目筆數
     if times > 0:  # 如果輸入內容大於 0
         Flag = False  # 更改旗標，脫離迴圈

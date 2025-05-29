@@ -1,10 +1,11 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
-## UNRELEASED ~~V1.0.4 (2025-MM-DD)~~
+## UNRELEASED ~~V1.0.5 (2025-MM-DD)~~
 ### 新增功能 Added
 - 在 `Func.py` 中的 `cat_question()` 「類別選擇平臺」中新增邊界檢查，可以檢查使用者輸入的類別編號是否超出邊界，避免出現空白圖表或排名而影響使用者體驗
 - 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中輸入年、月、日時新增邊界檢查，可以檢查使用者輸入的年、月、日是否超出邊界，避免出現空白圖表或排名而影響使用者體驗
+- 在 `Studio.py` 中新增 `__main__` 檢查，避免使用者誤啟動該模組
 ### 提升進步 Improved
 - 調整 CLI 輸出時的顏色變化，讓不同情境出現的提示更為顯著，提升使用者體驗
 ### 文檔更新 Edited

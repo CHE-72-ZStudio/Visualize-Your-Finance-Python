@@ -21,7 +21,7 @@ period_list = ["顯示使用說明", "分析所有紀錄", "特定年分的紀�
                "特定年月的紀錄", "特定月日的紀錄", "特定年日的紀錄", "特定年月日的紀錄", "返回上層選單", "結束程式運行"]  # 「時間選擇平臺」選單列表
 method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖",
                "總體花費金額長條圖", "總體花費次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
-# method_list 新增 顯示資產變化(期間總收入/總支出)
+# TODO: method_list 新增 顯示資產變化(期間總收入/總支出) and update method_manual
 
 outcome_cat = ["交通出行", "日常飲食", "購物花費", "帳單繳費", "服務消費", "休閒娛樂", "投資理財", "旅行出遊",
                "教育學習", "居家生活", "票證加值", "社交人情", "商務往來", "醫療保健", "借錢給人", "帳戶轉帳",
@@ -250,7 +250,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「時間選擇平臺」
 
-        match period:
+        match period:  # TODO:add a check for whether user input is out of year, month, day boundary
             case 0:  # 時間0：顯示使用說明
                 print(period_manual)  # 印出「時間選擇平臺」的對應說明文件
                 continue  # 回到「時間選擇平臺」

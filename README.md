@@ -2,7 +2,12 @@
 ## Visualize Your Finance (Python) Made by CHE_72 ZStudio
 
 ## 狀態徽章 (Badges)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CHE-72-ZStudio/Visualize-Your-Finance-Python)  
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CHE-72-ZStudio/Visualize-Your-Finance-Python)
+    [![GitHub Release](https://img.shields.io/github/v/release/CHE-72-ZStudio/Visualize-Your-Finance-Python)](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases)
+    [![GitHub License](https://img.shields.io/github/license/CHE-72-ZStudio/Visualize-Your-Finance-Python)]((https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/LICENSE))
+    [![GitHub Last Commit](https://img.shields.io/github/last-commit/CHE-72-ZStudio/Visualize-Your-Finance-Python)](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/commits)
+    [![Python 3.10+](https://img.shields.io/badge/Python%203.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
+    [![PyCharm](https://img.shields.io/badge/PyCharm-000000.svg?logo=PyCharm&logoColor=white)](https://www.jetbrains.com/pycharm/)  
 
 ## 程式介紹 (Description)
 「帳目分析可視化程式」是一款 CLI 程式，可以自動分析您的帳目數據並用各種直觀圖表與排名顯示，進而協助您達成管理金錢花費、開源節流的目的。  
@@ -77,10 +82,10 @@
 > 如果您有其他的功能需求或建議，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 
 ## 貢獻清單 (Contributors)
-- [CHE72](https://github.com/CHE72): 專案發起人／項目**主要**貢獻者／項目**主要**維護者  
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**主要**貢獻者／項目**主要**維護者  
 
 ## 授權許可 (License)
-本專案使用 GNU General Public License v3 開源許可，詳細開源授權許可內容可參閱 [LICENSE](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/CHANGELOG.md) 文件  
+本專案使用 GNU General Public License v3 開源許可，詳細開源授權許可內容可參閱 [LICENSE](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/LICENSE) 文件  
 > 注意：所有對此程式碼的修改與衍生版本，都必須以 GNU GPLv3 授權釋出。  
 
 ### 「帳目分析可視化程式（Python）」Ver1.0.0，著作權所有 (C) 2025-present CHE_72 ZStudio  

@@ -134,7 +134,7 @@ def pretreat():
     """
     # 嘗試開啟 Record.csv 檔案為 record 句柄，否則輸出錯誤訊息並直接結束程式（因為缺少該檔案，程式後續無法執行）
     try:
-        record = open("Record.csv", "r", newline="")
+        record = open("Record.csv", "r", newline="", encoding="UTF-8")
     except FileNotFoundError:
         print("\033[38;5;197m開啟 \"Record.csv\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
         print("請確保 \"Record.csv\" 與本程式元件放在同一資料夾下，以利程式正確讀取記帳檔案")

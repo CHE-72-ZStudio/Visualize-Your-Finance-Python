@@ -202,23 +202,30 @@ def cat_question(cat_list):
     回傳：
         cat (int)：使用者最終選擇的類別編號，作為後續篩選數據列表時使用
     """
-    print("這裡是「類別選擇平臺」，請選擇您想分析的帳目分類")  # 輸出「類別選擇平臺」的提示訊息
-    for i in range(0, len(cat_list)):  # 遍歷類別列表中的所有類別
-        if i == len(cat_list) - 1:  # 如果是列表中的最後一項
-            print("{}：{} --> \033[0m".format(i + 1, cat_list[i]), end='')  # 印出編號、列表文字與箭頭，準備讓使用者輸入
-        else:
-            print("\033[38;5;43m{}：{}".format(i + 1, cat_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
-
     flag, cat = True, -1  # 定義循環標籤與回傳值變數
 
     # 使用無窮迴圈，直到用戶輸入正確才能離開迴圈
     while flag:
-        try:
-            cat = int(input())  # 讀取輸入並轉換成整數
+        print("這裡是「類別選擇平臺」，請選擇您想分析的帳目分類")  # 輸出「類別選擇平臺」的提示訊息
+        for i in range(0, len(cat_list)):  # 遍歷類別列表中的所有類別
+            if i == len(cat_list) - 1:  # 如果是列表中的最後一項
+                print("{}：{} --> \033[0m".format(i + 1, cat_list[i]), end='')  # 印出編號、列表文字與箭頭，準備讓使用者輸入
+            else:
+                print("\033[38;5;43m{}：{}".format(i + 1, cat_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
+
+        try:  # 讀取使用者輸入至類別變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
+            cat = int(input())
+            if 0 < cat <= len(cat_list):
+                pass
+            else:  # 在輸入內容超出正常範圍時拋出例外
+                raise Exception()
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-            print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
             continue  # 回到迴圈的開頭，繼續重新輸入
-        finally:  # TODO: add a check for whether user input is out of cat boundary
+        except Exception:  # 如果使用者輸入超出正常範圍的內容
+            print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+            continue  # 回到迴圈的開頭，繼續重新輸入
+        else:
             flag = False  # 結束無窮迴圈的運行
 
     return cat  # 回傳類別編號，作為後續篩選數據列表時使用
@@ -247,7 +254,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
         try:  # 讀取使用者輸入至時間變數，並嘗試轉換成整數
             period = int(input())
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-            print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「時間選擇平臺」
 
         match period:  # TODO:add a check for whether user input is out of year, month, day boundary
@@ -261,7 +268,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 try:  # 讀取使用者輸入至 年 變數，並嘗試轉換成整數
                     year = int(input("您想要分析哪一年的數據資料？"))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
                 line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
@@ -270,7 +277,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 try:  # 讀取使用者輸入至 月 變數，並嘗試轉換成整數
                     month = int(input("您想要分析每年的哪一月的數據資料？"))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
@@ -279,7 +286,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 try:  # 讀取使用者輸入至 日 變數，並嘗試轉換成整數
                     day = int(input("您想要分析每年每月哪一天的數據資料？"))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, day=day)  # 以所需 日 變數過濾暫存數據列表
                 # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
@@ -297,7 +304,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     year = int(input("您想要分析哪一年的數據資料？"))
                     month = int(input("您想要分析 {} 年哪一月的數據資料？".format(year)))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
                 line_list = sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
@@ -307,7 +314,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     month = int(input("您想要分析每年哪一月的數據資料？"))
                     day = int(input("您想要分析每年 {} 月哪一天的數據資料？".format(month)))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
@@ -328,7 +335,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     month = int(input("您想要分析 {} 年哪一月的數據資料？".format(year)))
                     day = int(input("您想要分析 {} 年 {} 月哪一天的數據資料？".format(year, month)))
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, year=year, month=month, day=day)  # 以所需 年、月、日 變數過濾暫存數據列表
             case 9:  # 時間9：返回上層選單
@@ -348,7 +355,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
         try:
             method = int(input())
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-            print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「時間選擇平臺」
 
         match method:
@@ -402,7 +409,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 try:
                     rank = int(input("您想比較前幾筆資料？"))  # 讀取輸入並轉換成整數
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
                 continue  # 回到「時間選擇平臺」
@@ -412,7 +419,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 try:
                     rank = int(input("您想比較前幾筆資料？"))  # 讀取輸入並轉換成整數
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-                    print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
                 continue  # 回到「時間選擇平臺」

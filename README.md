@@ -31,7 +31,7 @@
     > 目前僅建議專業開發者直接編譯運行本程式，我們預計會在未來發行可供一般使用者執行的可執行二進制檔，詳情可見「未來功能」區塊  
 - Apple macOS / Linux  
     * 本程式尚未進行關於 macOS / Linux 的相容性測試  
-    * 您可以先為此程式的相容性進行測試，若使用中遇到任何問題，歡迎向本存儲庫提出問題 (Issues) 與建議 (PR)  
+    * 您可以先為此程式的相容性進行測試，若使用中遇到任何問題，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
     > 我們預計會在未來增加對這些系統的兼容，並發行可執行二進制檔，詳情可見「未來功能」區塊  
 
 ## 使用說明 (Instructions)
@@ -56,37 +56,45 @@
 > 所有更新紀錄可參閱 [CHANGELOG.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/CHANGELOG.md) 文件  
 
 ## V1.0.0 已知問題 (Known Issues in V1.0.0)
-| 問題編號 (Issues Num) | 錯誤標題 (Issues Title) | 影響程度 (Priority) | 修復狀態 (Status)        | 替代方案(Workaround) | 詳細內容 (Datails)                         | 
-|-------------------|---------------------|-----------------|----------------------|------------------|----------------------------------------|
-| *None*            | 長條圖部分標籤消失           | 邊緣 (Minor)      | 正在調查 (Investigating) | 無                | 在顯示長條圖時，「交通出行」標籤會因為不明原因無法正常顯示，但不影響實際結果 |
+| 問題編號 (Issues Num) | 錯誤標題 (Issues Title)  | 影響程度 (Priority) | 修復狀態 (Status)        | 替代方案(Workaround)        | 詳細內容 (Datails)                         | 
+|-------------------|----------------------|-----------------|----------------------|-------------------------|----------------------------------------|
+| *None*            | 無法開啟特定的 `Record.csv` | 核心 (Critical)   | 即將發布 (Fixed)         | 暫時避免在項目名稱欄位使用非 ASCII 字元 | 在開啟 UTF-8 編碼的 `Record.csv` 會出現無法解碼的錯誤  |
+| *None*            | 長條圖部分標籤消失            | 邊緣 (Minor)      | 正在調查 (Investigating) | 無                       | 在顯示長條圖時，「交通出行」標籤會因為不明原因無法正常顯示，但不影響實際結果 |
 > 如果您有發現任何其他這裡未列出的問題，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 
 ## 未來功能 (Future Features)
-| 未來版本        | 增加功能                                              | 開發狀態             | 優先順序       | 預定發布          |
-|-------------|---------------------------------------------------|------------------|------------|---------------|
-| ***1.0.4*** | 調整 CLI 輸出時的顏色變化                                   | 正在設計 (Designing)  | 高 (High)   | ***2025-06*** |
-| ***1.0.4*** | 在 `Func.py` 中的 `cat_question()` 「類別選擇平臺」中新增邊界檢查   | 正在設計 (Designing)  | 高 (High)   | ***2025-06*** |
-| ***1.0.4*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中輸入年、月、日時新增邊界檢查 | 正在設計 (Designing) | 高 (High)   | ***2025-06*** |
-| ***1.0.4*** | 修正 `Main.py`、`MANUAL.md` 中的描述說明                   | 準備發布 (Completed) | 中 (Medium)   | ***2025-06*** |
-| 1.1.0       | 增加可以新增 Record.csv 條目的功能                           | 功能規劃 (Planning)  | 高 (High)   | 2025-06       |
-| 1.2.0       | 增加可以寫入 Diagnose.Log 日誌檔案的功能                       | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.3.0       | 增加更多例外情形處理                                        | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.4.0       | 開始發行 Windows 可執行檔                                 | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.4.1       | 可執行檔集成中文字體                                        | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.5.0       | 增加對 macOS 的支援                                     | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
-| 1.5.1       | 開始發行 macOS 可執行檔                                   | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
-| 1.6.0       | 增加對 Linux 的支援                                     | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
-| 1.6.1       | 開始發行 Linux 可執行檔                                   | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
-| ***2.0.0*** | 增加跨平臺通用 GUI                                       | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| 未來版本         | 增加功能                                                 | 開發狀態             | 優先順序       | 預定發布          |
+|--------------|------------------------------------------------------|------------------|------------|---------------|
+| ***1.0.10*** | 修復開啟 UTF-8 編碼的 `Record.csv` 會出現無法解碼的錯誤               | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
+| ***1.0.10*** | 在 `Func.py` 中的 `cat_question()` 「類別選擇平臺」中新增邊界檢查      | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
+| ***1.0.10*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中輸入年、月、日時新增邊界檢查    | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
+| ***1.0.10*** | 在 `Studio.py` 中新增檢查，避免使用者誤啟動該模組                      | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
+| ***1.0.10*** | 調整 CLI 輸出時的顏色變化                                      | 正在設計 (Designing) | 高 (High)   | ***2025-06*** |
+| ***1.0.10*** | `.gitignore` 中新增 Windows 與 macOS 的模板，避免提交操作系統產生的快取檔案 | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
+| ***1.0.10*** | `.gitignore` 中新增 `Record.csv`，避免提交開發人員私人的帳目資料        | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
+| ***1.0.10*** | 修正 `Main.py`、`MANUAL.md` 中的描述說明                      | 開發延期 (Deferred)  | 中 (Medium) | ***2025-06*** |
+| ***1.0.10*** | 新增 `Example.csv` 檔案，供使用者參考                           | 正在設計 (Designing) | 中 (Medium) | ***2025-06*** |
+| ***1.0.10*** | 因已完成作業繳交，移除 `MakeRecord.py` 檔案，使其符合一般使用者的使用方式        | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| 1.0.11       | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增「更為完善的」邊界檢查     | 功能規劃 (Planning)  | 中 (Medium) | 2025-06       |
+| 1.1.0        | 增加可以新增 Record.csv 條目的功能                              | 功能規劃 (Planning)  | 高 (High)   | 2025-06       |
+| 1.2.0        | 增加可以寫入 Diagnose.Log 日誌檔案的功能                          | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
+| 1.3.0        | 增加更多例外情形處理                                           | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
+| 1.4.0        | 開始發行 Windows 可執行檔                                    | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
+| 1.4.1        | 可執行檔集成中文字體                                           | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
+| 1.5.0        | 增加對 macOS 的支援                                        | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
+| 1.5.1        | 開始發行 macOS 可執行檔                                      | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
+| 1.6.0        | 增加對 Linux 的支援                                        | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| 1.6.1        | 開始發行 Linux 可執行檔                                      | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| ***2.0.0***  | 增加跨平臺通用 GUI                                          | 功能規劃 (Planning)  | 中 (Medium) | ***2026-??*** |
 > 實際發布時間可能會因為當下開發情形而有所提前或延後，敬請耐心等候  
 > 如果您有其他的功能需求或建議，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 
 ## 貢獻清單 (Contributors)
-- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**主要**貢獻者／項目**主要**維護者  
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
 
 ## 授權許可 (License)
 本專案使用 GNU General Public License v3 開源許可，詳細開源授權許可內容可參閱 [LICENSE](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/LICENSE) 文件  
 > 注意：所有對此程式碼的修改與衍生版本，都必須以 GNU GPLv3 授權釋出。  
 
-### 「帳目分析可視化程式（Python）」Ver1.0.0，著作權所有 (C) 2025-present CHE_72 ZStudio  
-#### Visualize Your Finance (Python) Ver1.0.0 , Copytight (C) 2025-present CHE_72 ZStudio.  
+### 帳目分析可視化程式（Python），著作權所有 (C) 2025-現在 CHE_72 ZStudio  
+#### Visualize Your Finance (Python), Copytight (C) 2025-present CHE_72 ZStudio.  

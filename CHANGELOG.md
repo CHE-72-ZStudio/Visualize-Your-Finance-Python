@@ -1,6 +1,15 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
+## UNRELEASED ~~V1.0.14 (2025-06-DD)~~
+### 提升進步 Improved
+- 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查，可以應對數據列表為空的情形
+- 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度
+### 文檔更新 Edited
+- 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明
+### 貢獻清單 Contributor
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
+
 ## V1.0.11 (2025-06-08)
 ### 新增功能 Added
 - 在 `Func.py` 中的 `cat_question()` 「類別選擇平臺」中新增邊界檢查，可以檢查使用者輸入的類別編號是否超出邊界，避免出現空白圖表或排名而影響使用者體驗

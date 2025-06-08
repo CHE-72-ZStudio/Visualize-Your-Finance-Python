@@ -7,7 +7,9 @@
     [![GitHub License](https://img.shields.io/github/license/CHE-72-ZStudio/Visualize-Your-Finance-Python)](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/LICENSE)
     [![GitHub Last Commit](https://img.shields.io/github/last-commit/CHE-72-ZStudio/Visualize-Your-Finance-Python)](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/commits)
     [![Python 3.10+](https://img.shields.io/badge/Python%203.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
-    [![PyCharm](https://img.shields.io/badge/PyCharm-000000.svg?logo=PyCharm&logoColor=white)](https://www.jetbrains.com/pycharm/)  
+    [![PyCharm](https://img.shields.io/badge/PyCharm-000000.svg?logo=PyCharm&logoColor=white)](https://www.jetbrains.com/pycharm/)
+> 「Ask DeepWiki」功能為由 Devin AI 生成的 Wiki 文檔，每週自動刷新一次，內容可能會與最新版本程式有所差異  
+> 該 AI 生成的 Wiki 文檔與其回覆內容僅供參考，且我們對其不負任何責任與保證，實際情形請依本儲存庫最新提交為準  
 
 ## 程式介紹 (Description)
 「帳目分析可視化程式」是一款 CLI 程式，可以自動分析您的帳目數據並用各種直觀圖表與排名顯示，進而協助您達成管理金錢花費、開源節流的目的。  
@@ -76,19 +78,21 @@
 > 如果您有發現任何其他這裡未列出的問題，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 
 ## 未來功能 (Future Features)
-| 未來版本         | 增加功能                                                 | 開發狀態             | 優先順序       | 預定發布          |
-|--------------|------------------------------------------------------|------------------|------------|---------------|
-| ***1.0.12*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增「更為完善的」邊界檢查     | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
-| 1.1.0        | 增加可以新增 Record.csv 條目的功能                              | 功能規劃 (Planning)  | 高 (High)   | 2025-06       |
-| 1.2.0        | 增加可以寫入 Diagnose.Log 日誌檔案的功能                          | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.3.0        | 增加更多例外情形處理                                           | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.4.0        | 開始發行 Windows 可執行檔                                    | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.4.1        | 可執行檔集成中文字體                                           | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.5.0        | 增加對 macOS 的支援                                        | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
-| 1.5.1        | 開始發行 macOS 可執行檔                                      | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
-| 1.6.0        | 增加對 Linux 的支援                                        | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
-| 1.6.1        | 開始發行 Linux 可執行檔                                      | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
-| ***2.0.0***  | 增加跨平臺通用 GUI                                          | 功能規劃 (Planning)  | 中 (Medium) | ***2026-??*** |
+| 未來版本         | 增加功能                                           | 開發狀態             | 優先順序       | 預定發布          |
+|--------------|------------------------------------------------|------------------|------------|---------------|
+| ***1.0.14*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查 | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
+| ***1.0.14*** | 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度     | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| ***1.0.14*** | 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明    | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| 1.1.0        | 增加可以新增 Record.csv 條目的功能                        | 功能規劃 (Planning)  | 高 (High)   | 2025-06       |
+| 1.2.0        | 增加可以寫入 Diagnose.Log 日誌檔案的功能                    | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
+| 1.3.0        | 增加更多例外情形處理                                     | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
+| 1.4.0        | 開始發行 Windows 可執行檔                              | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
+| 1.4.1        | 可執行檔集成中文字體                                     | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
+| 1.5.0        | 增加對 macOS 的支援                                  | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
+| 1.5.1        | 開始發行 macOS 可執行檔                                | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
+| 1.6.0        | 增加對 Linux 的支援                                  | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| 1.6.1        | 開始發行 Linux 可執行檔                                | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| ***2.0.0***  | 增加跨平臺通用 GUI                                    | 功能規劃 (Planning)  | 中 (Medium) | ***2026-??*** |
 > 實際發布時間可能會因為當下開發情形而有所提前或延後，敬請耐心等候  
 > 如果您有其他的功能需求或建議，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 

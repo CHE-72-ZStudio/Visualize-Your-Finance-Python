@@ -242,6 +242,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
         analyze_year (list)：要分析的 支出／收入 年分列表，後續以「分析年分列表」代稱
         analyze_num (list)：要分析的 支出／收入 類別對應編號列表，後續以「分析編號列表」代稱
     """
+    if len(analyze_list) == 0:  # 如果傳入的分析數據列表為空，則無法分析，需要停止操作並返回「功能選擇平臺」
+        print("\033[38;5;197m數據集當中沒有任何資料，無法進行分析，現正返回「功能選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+        return  # 回到「功能選擇平臺」
+
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         temp_list = analyze_list  # 定義暫存數據列表，避免更改原始分析數據列表
         line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤
@@ -257,7 +261,9 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「時間選擇平臺」
 
-        match period:  # TODO: boundary check does not fit DRY principle, need to implement a function to replace them
+        # TODO: month and day boundary check does not fit DRY principle, need to implement a function to replace them by asking Gemini
+        # TODO: whether temp_list is empty test does not fit DRY principle, need to implement a function to replace them by asking Gemini
+        match period:
             case 0:  # 時間0：顯示使用說明
                 print(period_manual)  # 印出「時間選擇平臺」的對應說明文件
                 continue  # 回到「時間選擇平臺」
@@ -267,15 +273,16 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             case 2:  # 時間2：特定年分的紀錄
                 try:  # 讀取使用者輸入至 年 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
                     year = int(input("您想要分析哪一年的數據資料？"))
-                    if year not in analyze_year:  # 在輸入年度變數超出正常範圍時拋出例外
-                        raise Exception
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
             case 3:  # 時間3：特定月份的紀錄
@@ -289,9 +296,12 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
             case 4:  # 時間4：特定日期的紀錄
@@ -305,9 +315,12 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, day=day)  # 以所需 日 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
                 for y in analyze_year:
                     for m in month_list:
@@ -318,11 +331,9 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                         line_name.append("{}-{}".format(y, m))  # 將該時間段的名稱加入 X 軸標籤列表的末尾
                         line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾
                 line_axis = [i for i in range(len(line_name))]  # X 軸間距列表定義為 X 軸標籤列表的長度
-            case 5:  # 時間5：特定年月的紀錄  #TODO: Add a more specific boundary check
+            case 5:  # 時間5：特定年月的紀錄
                 try:  # 讀取使用者輸入至 年、月 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
                     year = int(input("您想要分析哪一年的數據資料？"))
-                    if year not in analyze_year:  # 在輸入年度變數超出正常範圍時拋出例外
-                        raise Exception
                     month = int(input("您想要分析 {} 年哪一月的數據資料？".format(year)))
                     if 1 <= month <= 12:
                         pass
@@ -332,12 +343,15 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 line_list = sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = day_list, day_list  # X 軸間距列表與 X 軸標籤列表定義為分析日期列表
-            case 6:  # 時間6：特定月日的紀錄  #TODO: Add a more specific boundary check
+            case 6:  # 時間6：特定月日的紀錄
                 try:  # 讀取使用者輸入至 月、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
                     month = int(input("您想要分析每年哪一月的數據資料？"))
                     if 1 <= month <= 12:
@@ -353,16 +367,17 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
-            case 7:  # 時間7：特定年日的紀錄  #TODO: Add a more specific boundary check
+            case 7:  # 時間7：特定年日的紀錄
                 try:  # 讀取使用者輸入至 年、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
                     year = int(input("您想要分析哪一年的數據資料？"))
-                    if year not in analyze_year:  # 在輸入年度變數超出正常範圍時拋出例外
-                        raise Exception
                     day = int(input("您想要分析 {} 年哪一天的數據資料？".format(year)))
                     if 1 <= day <= 31:
                         pass
@@ -372,16 +387,17 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
-            case 8:  # 時間8：特定年月日的紀錄  #TODO: Add a more specific boundary check
+            case 8:  # 時間8：特定年月日的紀錄
                 try:  # 讀取使用者輸入至 年、月、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
                     year = int(input("您想要分析哪一年的數據資料？"))
-                    if year not in analyze_year:  # 在輸入年度變數超出正常範圍時拋出例外
-                        raise Exception
                     month = int(input("您想要分析 {} 年哪一月的數據資料？".format(year)))
                     if 1 <= month <= 12:
                         pass
@@ -396,14 +412,17 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+                    print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(analyze_list, year=year, month=month, day=day)  # 以所需 年、月、日 變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
             case 9:  # 時間9：返回上層選單
-                print("正在返回「功能選擇平臺」\n\a")  # 輸出提示訊息
+                print("正在返回「功能選擇平臺」\n\a")  # 輸出提示訊息與通知聲音
                 return  # 回到「功能選擇平臺」
             case 10:  # 時間10：結束程式運行
-                print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息
+                print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                 sys.exit(0)  # 呼叫系統正常結束本程式運行
             case _:  # 其他錯誤的時間選擇輸入
                 print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
@@ -431,10 +450,13 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 else:
                     axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case 2:  # 分析2：各類折線走勢圖
-                cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                 if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
                     print("無法在這個時間段進行這項分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
+                    continue  # 回到「時間選擇平臺」
+                cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
             case 3:  # 分析3：總體金額圓餅佔比圖
                 temp_list = sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
@@ -477,6 +499,9 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             case 8:  # 分析8：各類細項排名表
                 cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                 temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
+                    print("\033[38;5;197m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 try:
                     rank = int(input("您想比較前幾筆資料？"))  # 讀取輸入並轉換成整數
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容

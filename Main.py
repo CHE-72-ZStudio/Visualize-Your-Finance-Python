@@ -19,7 +19,7 @@ if __name__ == "__main__":
     program_en = "Visualize Your Finance (Python)"
     version = "1.0.11"
 
-    print("歡迎您使用「{}」 Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
+    print("歡迎您使用「{}」Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
     print("\033[38;5;208m本程式可用來協助您分析 \"Record.csv\" 中的記帳數據，並使用圖形化的分析顯示結果。\033[0m")  # 輸出中文程式目的
     Func.pretreat()  # 呼叫預處理函式，嘗試讀取 Record.csv 中的記帳數據後進行數據整理，最後放置於列表中
     print("\033[38;5;208m以下所有問題請依照提示輸入「半形阿拉伯數字」回答\033[0m\n")  # 輸出中文使用提示，避免使用者誤用全形數字或中文數字
@@ -64,9 +64,11 @@ if __name__ == "__main__":
                     print("總支出為 NT${}，總收入為 NT${}".format(outcome_total, income_total))
                     print("目前淨資產為 NT${}".format(final_total))
 
-                    # 如果淨資產為負數，則輸出祝福消息做為彩蛋
+                    # 如果淨資產為特定數字內容，則輸出祝福消息做為彩蛋
                     if final_total < 0:
-                        print("祝福您天天發發發，早日發大財")
+                        print("\033[38;5;208m祝福您天天發發發，早日發大財\033[0m")
+                    elif final_total == 1:
+                        print("\033[38;5;208m一元復始，萬象更新\033[0m")
                 case 4:  # 功能4：顯示開源許可（英文原版）
                     # 嘗試開啟 License_EN.txt 檔案為 gpl 句柄，否則輸出錯誤訊息並取消印出開源許可
                     try:

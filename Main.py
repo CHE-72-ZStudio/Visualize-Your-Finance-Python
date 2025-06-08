@@ -12,14 +12,14 @@ if __name__ == "__main__":
     # 定義 中／英 程式名稱、程式版本號，如果日後有需要更新時，更改此處即可避免缺失遺漏
     program_zh = "帳目分析可視化程式（Python）"
     program_en = "Visualize Your Finance (Python)"
-    version = "1.0.12"
+    version = "1.0.13"
 
     print("歡迎您使用「{}」Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
     print("\033[38;5;208m本程式可用來協助您分析 \"Record.csv\" 中的記帳數據，並使用圖形化的分析顯示結果。\033[0m")  # 輸出中文程式目的
     Func.pretreat()  # 呼叫預處理函式，嘗試讀取 Record.csv 中的記帳數據後進行數據整理，最後放置於列表中
     print("\033[38;5;208m以下所有問題請依照提示輸入「半形阿拉伯數字」回答\033[0m\n")  # 輸出中文使用提示，避免使用者誤用全形數字或中文數字
 
-    func_list = ["顯示使用說明", "分析支出數據", "分析收入數據", "新增支出紀錄", "新增收入紀錄", "顯示目前資產", "顯示開源許可（英文原版）", "顯示開源許可（中文翻譯）", "顯示作者宣告", "結束程式運行"]  # 「功能選擇平臺」選單列表
+    func_list = ["顯示使用說明", "分析支出數據", "分析收入數據", "顯示目前資產", "新增支出紀錄", "新增收入紀錄", "顯示開源許可（英文原版）", "顯示開源許可（中文翻譯）", "顯示作者宣告", "結束程式運行"]  # 「功能選擇平臺」選單列表
     func_manual = ("\033[38;5;208m\n「功能選擇平臺」使用說明\t0 顯示本則使用說明\t1 分析記帳檔案中的支出紀錄\t2 分析記帳檔案中的收入紀錄\n"
                    "3 依據現有記帳資料的總收入與總支出，計算結餘後的淨資產\t4 在 \"Record.csv\" 中新增支出紀錄\t5 在 \"Record.csv\" 中新增收入紀錄\t\n"
                    "6 顯示英文原版的 GNU GPLv3 開源授權許可（具有法律效力）\t7 顯示中文翻譯的 GNU GPLv3 開源授權許可（僅供理解參考）\n"
@@ -54,10 +54,10 @@ if __name__ == "__main__":
                         income_total += row[5]
                     final_total = income_total - outcome_total
 
-                    # 輸出計算結果  # TODO:嘗試改為增加分隔位顯示的金額，較為方便閱讀判斷
+                    # 輸出計算結果
                     print("在您的所有紀錄中：")
-                    print("總支出為 NT${}，總收入為 NT${}".format(outcome_total, income_total))
-                    print("目前淨資產為 NT${}".format(final_total))
+                    print("總支出為 NT${:,}，總收入為 NT${:,}".format(outcome_total, income_total))
+                    print("目前淨資產為 NT${:,}".format(final_total))
 
                     # 如果淨資產為特定數字內容，則輸出祝福消息做為彩蛋
                     if final_total < 0:

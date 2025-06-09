@@ -128,7 +128,7 @@ def rank_data(original_list, analyze_cat, num):
     print("\033[0m")  # 還原一般輸出格式，移除顏色效果，同時可以進行換行的分隔作用
 
 
-def write_record(flow, reocrd_cat):  #TODO: complete this in Ver1.1.0
+def write_record(flow, reocrd_cat):  #TODO: complete this in Ver1.1.X
     """
     用於 Main.py 呼叫的新增紀錄函數，會將使用者輸入的帳目數據儲存至 Record.csv，以供使用者後續分析數據使用
 
@@ -136,10 +136,61 @@ def write_record(flow, reocrd_cat):  #TODO: complete this in Ver1.1.0
         * flow (int)：要寫入的金流編號，1 表示支出，2 表示收入
         * reocrd_cat (list)：紀錄資料對應的 支出／收入 類別列表，後續以「紀錄類別列表」代稱
     """
-    row = "{}".format(flow)
-    #row = "{},{},{},{},{},{},{}".format(flow,cat,year,month,day,amount,item)
-    with open("Record.csv", "a+", encoding="UTF-8") as record:
-        pass
+    # 使用金流編號定義對應的金流名稱，以便顯示給使用者
+    if flow == 1:
+        flow_name = "支出"
+    elif flow == 2:
+        flow_name = "收入"
+    else:
+        print("\033[38;5;197m程式發生不明錯誤，無法繼續執行，正在結束程序\033[0m\a\n\n")
+        sys.exit(22)  # 呼叫系統結束本程式運行，原因為"Invalid argument"
+
+    while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
+        print("\033[38;5;43m這裡是「數據輸入平臺」，您正在輸入{}帳目\033[0m".format(flow_name))  # 輸出「數據輸入平臺」的提示訊息
+        cat = cat_question(reocrd_cat)  # 呼叫「類別選擇平臺」取得所需類別
+
+        try:  # 讀取使用者輸入至 年、月、日、金額 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
+            year = int(input("您想要輸入哪一年的 {} 資料？".format(reocrd_cat[cat - 1])))
+            month = int(input("您想要輸入 {} 年哪一月的 {} 資料？".format(year, reocrd_cat[cat - 1])))
+            if 1 <= month <= 12:
+                pass
+            else:  # 在輸入月份變數超出正常範圍時拋出例外
+                raise Exception
+            day = int(input("您想要輸入 {} 年 {} 月哪一天的 {} 資料？".format(year, month, reocrd_cat[cat - 1])))
+            if 1 <= day <= 31:
+                pass
+            else:  # 在輸入日期變數超出正常範圍時拋出例外
+                raise Exception
+
+            amount = input("您想要輸入在 {} 年 {} 月 {} 日 {} 的金額數目是多少 NT$？".format(year, month, day, reocrd_cat[cat - 1]))
+            # 檢查使用者輸入的內容是否為純數字（不包含負號與小數點），若否則拋出例外
+            if amount.isdigit():
+                amount = int(amount)
+            else:
+                raise ValueError
+        except ValueError:  # 如果使用者輸入無法轉換成整數的內容
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            continue  # 回到「數據輸入平臺」
+        except Exception:  # 如果使用者輸入超出正常範圍的內容
+            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            continue  # 回到「數據輸入平臺」
+
+        item = input("您想要輸入此筆 {} NT${} 的 項目名稱／註記 為何？".format(reocrd_cat[cat - 1], amount))
+        row = "{},{},{},{},{},{},{}".format(flow,cat,year,month,day,amount,item)
+        print("\033[38;5;47m正在寫入 {}-{}-{} 的 {} {} NT${} 數據\033[0m".format(year, month, day, flow_name, reocrd_cat[cat - 1], amount))
+
+        # 使用附加模式與 UTF-8 開啟 Record.csv 檔案為 record 句柄，避免覆蓋原有數據與日後無法讀取
+        with open("Record.csv", "a+", encoding="UTF-8") as record:
+            record.write("{}\n".format(row))
+
+        next = input("\033[38;5;47m程式已完成該筆資料的儲存，您是否還要輸入其他筆金額數據？（輸入 Y 以繼續輸入，其他文字則會返回「功能選擇平臺」）")
+        match next:
+            case "y" | "Y":
+                print("\033[38;5;43m正在返回「數據輸入平臺」以繼續輸入下一筆數據\033[0m\a\n")  # 輸出提示訊息與通知聲音
+                continue  # 回到「數據輸入平臺」
+            case _:
+                print("\033[38;5;43m正在返回「功能選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
+                return  # 回到「功能選擇平臺」
 
 
 def pretreat():
@@ -154,7 +205,7 @@ def pretreat():
         print("\033[38;5;197m開啟 \"Record.csv\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
         print("請確保 \"Record.csv\" 與本程式元件放在同一資料夾下，以利程式正確讀取記帳檔案")
         print("\n程序運行出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")
-        sys.exit(1)
+        sys.exit(2)
 
     rows_iterator = csv.reader(record)  # 使用 csv.reader 讀取 record 數據並儲存到迭代器
     global income_year, outcome_year  # 確保能夠正確讀取與修改全域列表
@@ -221,7 +272,7 @@ def cat_question(cat_list):
 
     # 使用無窮迴圈，直到用戶輸入正確才能離開迴圈
     while flag:
-        print("這裡是「類別選擇平臺」，請選擇您想分析的帳目分類")  # 輸出「類別選擇平臺」的提示訊息
+        print("這裡是「類別選擇平臺」，請選擇您想使用的帳目分類")  # 輸出「類別選擇平臺」的提示訊息
         for i in range(0, len(cat_list)):  # 遍歷類別列表中的所有類別
             if i == len(cat_list) - 1:  # 如果是列表中的最後一項
                 print("{}：{} --> \033[0m".format(i + 1, cat_list[i]), end='')  # 印出編號、列表文字與箭頭，準備讓使用者輸入
@@ -434,7 +485,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
             case 9:  # 時間9：返回上層選單
-                print("\033[38;5;43m正在返回「功能選擇平臺」\n\a")  # 輸出提示訊息與通知聲音
+                print("\033[38;5;43m正在返回「功能選擇平臺」\033[0m\n\a")  # 輸出提示訊息與通知聲音
                 return  # 回到「功能選擇平臺」
             case 10:  # 時間10：結束程式運行
                 print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
@@ -525,7 +576,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
                 continue  # 回到「時間選擇平臺」
             case 9:  # 分析9：返回上層選單
-                print("\033[38;5;43m正在返回「時間選擇平臺」")  # 輸出提示訊息
+                print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                 continue  # 回到「時間選擇平臺」
             case 10:  # 分析10：結束程式運行
                 print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音

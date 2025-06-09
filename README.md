@@ -49,8 +49,8 @@
     - 如果是在終端顯示出排名資料，在終端顯示所有排名資料且您已完成閱覽後，可以進行下一步操作  
 8. 這時應該會回到「時間選擇平臺」，您可以繼續不同時間段、不同圖表、不同類別的分析；也可以選擇返回「功能選擇平臺」，或是分析完成後可以直接依照指示輸入對應的半形數字後按下 `Enter/Return` 按鍵以結束程式  
 > 若您輸入的內容有誤，本程式將會自動提醒您，並提示即將返回的介面，以供您做好準備  
-> 我們在程式中隱藏了一些有趣的小彩蛋，等待您來發掘！
-> 更為詳細的使用說明與 Record.csv 檔案規範可以參考 [MANUAL.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/MANUAL.md) 文件
+> 我們在程式中隱藏了一些有趣的小彩蛋，等待您來發掘！  
+> 更為詳細的使用說明與 `Record.csv` 檔案規範可以參考 [MANUAL.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/MANUAL.md) 文件
 
 ## V1.0.11 更新日誌 (Changes in V1.0.11)
 * 新增功能 Added

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # 定義 中／英 程式名稱、程式版本號，如果日後有需要更新時，更改此處即可避免缺失遺漏
     program_zh = "帳目分析可視化程式（Python）"
     program_en = "Visualize Your Finance (Python)"
-    version = "1.0.15"
+    version = "1.1.4"
 
     print("歡迎您使用「{}」Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
     print("\033[38;5;208m本程式可用來協助您分析 \"Record.csv\" 中的記帳數據，並使用圖形化的分析顯示結果。\033[0m")  # 輸出中文程式目的
@@ -65,14 +65,12 @@ if __name__ == "__main__":
                     elif final_total == 1:
                         print("\033[38;5;208m一元復始，萬象更新\033[0m")
                 case 4:  # 功能4：新增支出紀錄
-                    print("\033[38;5;208m「新增支出紀錄」的功能現正開發中，預計於 Ver1.1.0 中發布，敬請期待\033[0m")
                     # 呼叫 Func.py 中的 write_record() 函數進行新增紀錄，依序傳入 支出金流編號、支出類別列表
                     Func.write_record(1, Func.outcome_cat)
                     # 需要清空數據列表後重新呼叫預處理函式，讀取更新過的記帳數據並進行數據整理，最後放置於列表中完成數據列表的更新
                     Func.outcome_list, Func.income_list = [], []
                     Func.pretreat()
                 case 5:  # 功能5：新增收入紀錄
-                    print("\033[38;5;208m「新增收入紀錄」的功能現正開發中，預計於 Ver1.1.0 中發布，敬請期待\033[0m")
                     # 呼叫 Func.py 中的 write_record() 函數進行新增紀錄，依序傳入 收入金流編號、收入類別列表
                     Func.write_record(2, Func.income_cat)
                     # 需要清空數據列表後重新呼叫預處理函式，讀取更新過的記帳數據並進行數據整理，最後放置於列表中完成數據列表的更新

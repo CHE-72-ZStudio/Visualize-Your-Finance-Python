@@ -6,6 +6,7 @@ Func.py
 * sum_data：針對數據列表的特定欄位進行加總後，回傳加總後的列表
 * filter_data：根據不同的標籤需求過濾原分析數據列表並回傳
 * rank_data：根據不同的數據資料與需求筆數，對數據資料的金額進行排名並印出
+* write_record：新增紀錄函數，將接收到的帳目數據儲存至 Record.csv
 * pretreat：預處理函數，將讀取到的數據儲存至全域列表
 * cat_question：詢問使用者的「類別選擇平臺」，並回傳最終選擇的類別編號
 * analyze：分析函數，本程式的核心分析邏輯部分
@@ -20,8 +21,8 @@ from Plot import *
 period_list = ["顯示使用說明", "分析所有紀錄", "特定年分的紀錄", "特定月份的紀錄", "特定日期的紀錄",
                "特定年月的紀錄", "特定月日的紀錄", "特定年日的紀錄", "特定年月日的紀錄", "返回上層選單", "結束程式運行"]  # 「時間選擇平臺」選單列表
 method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖",
-               "總體花費金額長條圖", "總體花費次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
-# TODO: method_list 新增 顯示資產變化(期間總收入/總支出) and update method_manual
+               "總體流動金額長條圖", "總體流動次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
+# TODO: method_list 新增 顯示資產變化(期間總收入/總支出) 為 case 5 並更新 method_manual 與 MANUAL.md
 
 outcome_cat = ["交通出行", "日常飲食", "購物花費", "帳單繳費", "服務消費", "休閒娛樂", "投資理財", "旅行出遊",
                "教育學習", "居家生活", "票證加值", "社交人情", "商務往來", "醫療保健", "借錢給人", "帳戶轉帳",
@@ -45,7 +46,7 @@ def print_list(content_list):
     用於遍歷印出列表，並能顯示中文頓號與輸入用箭頭
 
     參數：
-        content_list (list)：要被遍歷印出的列表資料
+        * content_list (list)：要被遍歷印出的列表資料
     """
     for i in range(len(content_list)):
         if i == len(content_list) - 1:  # 如果是列表中的最後一項
@@ -59,12 +60,12 @@ def sum_data(original_list, item_list, position):
     針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的加總後，回傳加總後符合原始項目順序的列表
 
     參數：
-        original_list (list)：要讀取後進行加總的原始分析數據列表
-        item_list (list)：要進行篩選後加總的項目列表，即圖表中的 X 軸
-        position (int)：該項目對應的原始分析數據欄位位置
+        * original_list (list)：要讀取後進行加總的原始分析數據列表
+        * item_list (list)：要進行篩選後加總的項目列表，即圖表中的 X 軸
+        * position (int)：該項目對應的原始分析數據欄位位置
 
     回傳：
-        data_list (list)：按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
+        * data_list (list)：按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
     """
     data_list = list()  # 宣告空的回傳列表
 
@@ -85,14 +86,14 @@ def filter_data(original_list, year=None, month=None, day=None, category=None):
     由 Gemini Code Assist 提供建議，使用「列表建構 List Comprehension」的邏輯
 
     參數：
-        original_list (list)：要進行過濾篩選的分析數據列表
-        year (int, optional)：要進行篩選的年度，若無則不進行此項篩選
-        month (int, optional)：要進行篩選的月份，若無則不進行此項篩選
-        day (int, optional)：要進行篩選的日期，若無則不進行此項篩選
-        category (int, optional)：要進行篩選的類別，若無則不進行此項篩選
+        * original_list (list)：要進行過濾篩選的分析數據列表
+        * year (int, optional)：要進行篩選的年度，若無則不進行此項篩選
+        * month (int, optional)：要進行篩選的月份，若無則不進行此項篩選
+        * day (int, optional)：要進行篩選的日期，若無則不進行此項篩選
+        * category (int, optional)：要進行篩選的類別，若無則不進行此項篩選
 
     回傳：
-        filtered_list (list)：完成篩選後的分析數據列表，可以用於繪圖或其他後續操作
+        * filtered_list (list)：完成篩選後的分析數據列表，可以用於繪圖或其他後續操作
     """
     filtered_list = original_list  # 建立數據列表以進行後續篩選與回傳
     if year is not None:
@@ -112,9 +113,9 @@ def rank_data(original_list, analyze_cat, num):
     由 Gemini Code Assist 提供建議，使用「匿名函數 Lambda」的方式
 
     參數：
-        original_list (list)：要進行排名的分析數據列表
-        analyze_cat (list)：分析類別列表，用於在輸出排名時可以顯示，方便使用者找尋
-        num (int)：使用者要求顯示的排名數量
+        * original_list (list)：要進行排名的分析數據列表
+        * analyze_cat (list)：分析類別列表，用於在輸出排名時可以顯示，方便使用者找尋
+        * num (int)：使用者要求顯示的排名數量
     """
     rank_list = sorted(original_list, key=lambda row: row[5], reverse=True)  # 依據原分析數據列表中，金額的大小順序進行排名並放入排名列表
     rank_list = rank_list[:num]  # 從排名列表中取出金額最大的前 num 名後放入排名列表
@@ -125,6 +126,20 @@ def rank_data(original_list, analyze_cat, num):
         print(output)  # 印出名次、時間、類別、金額、詳細描述
         num += 1  # 名次遞增，前進到下一名
     print("\033[0m")  # 還原一般輸出格式，移除顏色效果，同時可以進行換行的分隔作用
+
+
+def write_record(flow, reocrd_cat):  #TODO: complete this in Ver1.1.0
+    """
+    用於 Main.py 呼叫的新增紀錄函數，會將使用者輸入的帳目數據儲存至 Record.csv，以供使用者後續分析數據使用
+
+    參數：
+        * flow (int)：要寫入的金流編號，1 表示支出，2 表示收入
+        * reocrd_cat (list)：紀錄資料對應的 支出／收入 類別列表，後續以「紀錄類別列表」代稱
+    """
+    row = "{}".format(flow)
+    #row = "{},{},{},{},{},{},{}".format(flow,cat,year,month,day,amount,item)
+    with open("Record.csv", "a+", encoding="UTF-8") as record:
+        pass
 
 
 def pretreat():
@@ -197,10 +212,10 @@ def cat_question(cat_list):
     用於詢問使用者特定類別的「類別選擇平臺」，並回傳最終選擇的類別編號
 
     參數：
-        cat_list (list)：要讓使用者選擇的分析類別列表
+        * cat_list (list)：要讓使用者選擇的分析類別列表
 
     回傳：
-        cat (int)：使用者最終選擇的類別編號，作為後續篩選數據列表時使用
+        * cat (int)：使用者最終選擇的類別編號，作為後續篩選數據列表時使用
     """
     flag, cat = True, -1  # 定義循環標籤與回傳值變數
 
@@ -237,10 +252,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
     內含「時間選擇平臺」與「分析選擇平臺」，並在必要時呼叫「類別選擇平臺」函數，在完成資料整理後在必要時會呼叫 Plot.py 中的函數進行圖表繪製
 
     參數：
-        analyze_list (list)：要分析的 支出／收入 數據列表，後續以「分析數據列表」代稱
-        analyze_cat (list)：要分析的 支出／收入 類別列表，後續以「分析類別列表」代稱
-        analyze_year (list)：要分析的 支出／收入 年分列表，後續以「分析年分列表」代稱
-        analyze_num (list)：要分析的 支出／收入 類別對應編號列表，後續以「分析編號列表」代稱
+        * analyze_list (list)：要分析的 支出／收入 數據列表，後續以「分析數據列表」代稱
+        * analyze_cat (list)：要分析的 支出／收入 類別列表，後續以「分析類別列表」代稱
+        * analyze_year (list)：要分析的 支出／收入 年分列表，後續以「分析年分列表」代稱
+        * analyze_num (list)：要分析的 支出／收入 類別對應編號列表，後續以「分析編號列表」代稱
     """
     if len(analyze_list) == 0:  # 如果傳入的分析數據列表為空，則無法分析，需要停止操作並返回「功能選擇平臺」
         print("\033[38;5;208m數據集當中沒有任何資料，無法進行分析，現正返回「功能選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入

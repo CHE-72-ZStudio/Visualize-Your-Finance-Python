@@ -309,5 +309,7 @@ Temporary Items
 .apdisk
 
 ### Visualize-Your-Finance-Python template
-# Personal Record File
-Record.csv
+# Personal Record File and Log File
+Diagnosis.LOG
+*.csv
+!Example.csv

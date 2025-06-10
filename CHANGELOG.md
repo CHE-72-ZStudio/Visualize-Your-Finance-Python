@@ -9,7 +9,7 @@
 - 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度
 ### 文檔更新 Edited
 - 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明
-- 更新 `MANUAL.md` 中的功能說明，使其與最新版的 `Func.py` 保持一致
+- 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`
 ### 貢獻清單 Contributor
 - [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
 

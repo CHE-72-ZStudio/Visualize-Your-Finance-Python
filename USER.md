@@ -12,14 +12,14 @@
 
 ## 1. 環境需求
 - **作業系統**：
-    - Microsoft Windows 10+（20H1 以上版本）搭配 [Windows 終端機 (Windows Terminal)](https://aka.ms/terminal)
+    - Microsoft Windows 10+ 64位元（2004 以上版本）搭配 [Windows 終端機 (Windows Terminal)](https://aka.ms/terminal)
         - Windows 11+ 已預裝 Windows 終端機，無須另外安裝
     - Apple macOS 搭配系統自帶的 終端機.app (Terminal.app)
     - Linux 搭配 [KDE 的 Konsole](https://konsole.kde.org/download.html)
 
 
 ## 2. 安裝配置
-1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本程式對應系統的二進制檔案壓縮包，解壓縮後放置於適當的位置  
+1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本程式對應您所使用系統的二進制檔案壓縮包，解壓縮後放置於適當的位置  
 2. 雙擊打開本程式的可執行二進制檔案，即可開始使用本程式 
 
 

@@ -13,7 +13,7 @@
 ## 1. 環境需求
 - **作業系統**：
     - Microsoft Windows 10+
-    - Apple macOS
+    - Apple macOS (AMD64/ARM64)  
     - Linux
 - **依賴套件**：
     - Python 3.10+（支援 match...case... 語法）  

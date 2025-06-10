@@ -24,17 +24,16 @@
 
 ## 環境需求 (Requirements)
 - Microsoft Windows  
-    * 對於一般使用者，建議使用 Windows 10+ (20H1+) 搭配 [Windows 終端機 (Windows Terminal)](https://aka.ms/terminal)
+    * Windows 10+ 64位元（2004 以上版本）搭配 [Windows 終端機 (Windows Terminal)](https://aka.ms/terminal)
         * Windows 11+ 已預裝 Windows 終端機，無須另外安裝
 - Apple macOS  
-    * 對於一般使用者，建議使用系統自帶的 終端機.app (Terminal.app)
-- Linux  
-    * 對於一般使用者，建議可以安裝 [KDE 的 Konsole](https://konsole.kde.org/download.html) 或其他支援 ANSI 8 位元顏色顯示轉義碼的終端程式
-> 目前僅建議專業開發者直接編譯運行本程式，我們預計會在未來發行可供一般使用者執行的可執行二進制檔，詳情可見「未來功能」區塊
+- Linux
+> 一般的 Windows 使用者可以直接從 Releases 頁面直接下載 `VSPF-Win-X.Y.ZZ.zip`
+> 目前僅建議專業開發者直接在 Apple macOS / Linux 編譯運行本程式，我們預計會在未來發行可供一般使用者執行的可執行二進制檔，詳情可見「未來功能」區塊
 
 ## 使用說明 (Instructions)
 1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本封裝程式檔案對應系統的二進制檔案壓縮包，解壓縮後放置於適當的位置  
-2. 雙擊打開本程式的可執行二進制檔案，即可開始使用本程式  
+2. 雙擊打開本程式的可執行二進制檔案 `VSPF-X.Y.ZZ-OS`，即可開始使用本程式  
 3. 進入「功能選擇平臺」，依據您所想要使用的功能輸入對應的半形數字後按下 `Enter/Return` 按鍵  
 4. 進入「時間選擇平臺」，依據您所想要分析的時間段輸入對應的半形數字後按下 `Enter/Return` 按鍵  
     - （如果有的話）輸入後會出現時間提示，依據您所想要分析的時間段與提示輸入整數西元年、整數月份或整數日期，請注意僅能輸入半形數字
@@ -77,17 +76,16 @@
 ## 未來功能 (Future Features)
 | 未來版本        | 增加功能                                           | 開發狀態             | 優先順序       | 預定發布          |
 |-------------|------------------------------------------------|------------------|------------|---------------|
-| ***1.1.4*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查 | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
-| ***1.1.4*** | 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度     | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.4*** | 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明    | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.4*** | 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`  | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.4*** | 增加可以新增 `Record.csv` 條目的功能                      | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
+| ***1.1.5*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查 | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
+| ***1.1.5*** | 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度     | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| ***1.1.5*** | 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明    | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| ***1.1.5*** | 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`  | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
+| ***1.1.5*** | 增加可以新增 `Record.csv` 條目的功能                      | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
+| ***1.1.5*** | 開始發行 Windows 可執行檔                              | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
 | 1.2.0       | 增加可以寫入 `Diagnose.Log` 日誌檔案的功能                  | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
 | 1.2.1       | 增加更多例外情形處理                                     | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.3.0       | 開始發行 Windows 可執行檔                              | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.3.1       | 可執行檔集成華為 HarmonyOS Sans 字體                     | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.3.2       | 開始發行 macOS 可執行檔                                | 功能規劃 (Planning)  | 中 (Medium) | 2025-12       |
-| 1.3.3       | 開始發行 Linux 可執行檔                                | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
+| 1.2.2       | 可執行檔集成華為 HarmonyOS Sans 字體                     | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
+| 1.2.3       | 開始發行 macOS/Linux 可執行檔                          | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
 | ***2.0.0*** | 增加跨平臺通用 GUI                                    | 功能規劃 (Planning)  | 中 (Medium) | ***2026-??*** |
 > 實際發布時間可能會因為當下開發情形而有所提前或延後，敬請耐心等候  
 > 如果您有其他的功能需求或建議，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  

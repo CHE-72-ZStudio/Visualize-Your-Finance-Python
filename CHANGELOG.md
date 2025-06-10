@@ -1,10 +1,10 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
-## UNRELEASED ~~V1.1.5 (2025-06-1?)~~
+## V1.1.5 (2025-06-10)
 ### 新增功能 Added
 - 在 `Func.py` 中新增 `write_record()` 函數，現在可以使用本程式在 `Record.csv` 內新增帳目數據  
-- 開始正式發行能在 Windows 上運行的 `VSPF.EXE` 可執行檔壓縮包
+- 開始正式發行能在 Windows 上運行的可執行檔壓縮包
 ### 提升進步 Improved
 - 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查，可以應對數據列表為空的情形  
 - 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度  

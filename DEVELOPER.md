@@ -21,7 +21,7 @@
     - 本專案的 Python 模組需求已在 `Requirements.txt` 文件中列出。您可以使用 pip 安裝所有模組依賴： `pip install -r Requirements.txt`  
 
 ## 2. 安裝配置
-1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本程式檔案的壓縮檔，解壓縮後放置於適當的位置  
+1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本程式檔案的壓縮檔 `Source Code`，解壓縮後放置於適當的位置  
 2. 依據下方的「4. 檔案規範/`Record.csv`」區塊新增或修改 `Record.csv` 後使用 UTF-8 編碼存檔，使其符合您的真實帳目內容  
      > 您也可以選擇直接透過本程式新增條目，而不用手動修改 `Record.csv`  
 3. 確認您的 `Record.csv` 檔案與解壓縮後的 `Main.py` 檔案放置於同一文件夾路徑下，並且此文件夾同時包含程式運行時的其他必備檔案  

@@ -32,7 +32,7 @@
 > 目前僅建議專業開發者直接在 Apple macOS / Linux 編譯運行本程式，我們預計會在未來發行可供一般使用者執行的可執行二進制檔，詳情可見「未來功能」區塊
 
 ## 使用說明 (Instructions)
-1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本封裝程式檔案對應系統的二進制檔案壓縮包，解壓縮後放置於適當的位置  
+1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載對應系統的壓縮包 `VSPF-OS-X.Y.ZZ.zip`，解壓縮後放置於適當的位置  
 2. 雙擊打開本程式的可執行二進制檔案 `VSPF-X.Y.ZZ-OS`，即可開始使用本程式  
 3. 進入「功能選擇平臺」，依據您所想要使用的功能輸入對應的半形數字後按下 `Enter/Return` 按鍵  
 4. 進入「時間選擇平臺」，依據您所想要分析的時間段輸入對應的半形數字後按下 `Enter/Return` 按鍵  

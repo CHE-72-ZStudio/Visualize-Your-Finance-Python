@@ -47,26 +47,19 @@
 > 我們在程式中隱藏了一些有趣的小彩蛋，等待您來發掘！  
 > 詳細的 用戶手冊可以參考 [USER.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/USER.md) 文件；開發手冊可以參考 [DEVELOPER.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/DEVELOPER.md) 文件  
 
-## V1.0.11 更新日誌 (Changes in V1.0.11)
+## V1.1.5 更新日誌 (Changes in V1.1.5)
 * 新增功能 Added
-    - 在 `Func.py` 中的 `cat_question()` 「類別選擇平臺」中新增邊界檢查，可以檢查使用者輸入的類別編號是否超出邊界，避免出現空白圖表或排名而影響使用者體驗
-    - 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中輸入年、月、日時新增邊界檢查，可以檢查使用者輸入的年、月、日是否超出邊界，避免出現空白圖表或排名而影響使用者體驗
-    - 在 `Studio.py` 中新增 `__main__` 檢查，避免使用者誤啟動該模組
-* 功能修復 Fixed
-    - 修復 `Func.py` 中的 `pretreat()` 開啟 UTF-8 編碼的 `Record.csv` 會出現無法解碼的錯誤
+    - 在 `Func.py` 中新增 `write_record()` 函數，現在可以使用本程式在 `Record.csv` 內新增帳目數據  
+    - 開始正式發行能在 Windows 上運行的可執行檔壓縮包
 * 提升進步 Improved
-    - 調整 CLI 輸出時的顏色變化，讓不同情境出現的提示更為顯著，提升使用者體驗
-    - `.gitignore` 中新增 Windows 與 macOS 的模板，避免提交操作系統產生的多餘檔案
-    - `.gitignore` 中新增 `Record.csv`，避免提交開發人員私人的帳目資料
-    - 在 `Main.py` 中新增一些驚喜的小彩蛋，供使用者發掘，提升用戶體驗
+    - 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查，可以應對數據列表為空的情形  
+    - 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度  
 * 文檔更新 Edited
-    - 修正 `Main.py`、`MANUAL.md` 中部分功能的描述說明，使之符合最新版程式
-    - 新增 `Example.csv` 檔案，供使用者參考實際使用格式
-* 已經移除 Removed
-    - 因已完成作業繳交，移除 `MakeRecord.py` 檔案，使其符合一般使用者的使用方式
+    - 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明  
+    - 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`  
 > 所有更新紀錄可參閱 [CHANGELOG.md](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/blob/main/CHANGELOG.md) 文件  
 
-## V1.0.11 已知問題 (Known Issues in V1.0.11)
+## V1.1.5 已知問題 (Known Issues in V1.1.5)
 | 問題編號 (Issues Num) | 錯誤標題 (Issues Title) | 影響程度 (Priority) | 修復狀態 (Status)        | 替代方案(Workaround) | 詳細內容 (Datails)                                     | 
 |-------------------|---------------------|-----------------|----------------------|------------------|----------------------------------------------------|
 | *None*            | 長條圖部分標籤消失           | 邊緣 (Minor)      | 正在調查 (Investigating) | 無                | 在顯示長條圖時，「交通出行 / 工資薪水」標籤會因為不明原因無法正常顯示，但不影響實際結果      |
@@ -74,19 +67,14 @@
 > 如果您有發現任何其他這裡未列出的問題，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 
 ## 未來功能 (Future Features)
-| 未來版本        | 增加功能                                           | 開發狀態             | 優先順序       | 預定發布          |
-|-------------|------------------------------------------------|------------------|------------|---------------|
-| ***1.1.5*** | 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查 | 準備發布 (Completed) | 中 (Medium) | ***2025-06*** |
-| ***1.1.5*** | 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度     | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.5*** | 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明    | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.5*** | 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`  | 準備發布 (Completed) | 低 (Low)    | ***2025-06*** |
-| ***1.1.5*** | 增加可以新增 `Record.csv` 條目的功能                      | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
-| ***1.1.5*** | 開始發行 Windows 可執行檔                              | 準備發布 (Completed) | 高 (High)   | ***2025-06*** |
-| 1.2.0       | 增加可以寫入 `Diagnose.Log` 日誌檔案的功能                  | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.2.1       | 增加更多例外情形處理                                     | 功能規劃 (Planning)  | 高 (High)   | 2025-07       |
-| 1.2.2       | 可執行檔集成華為 HarmonyOS Sans 字體                     | 功能規劃 (Planning)  | 高 (High)   | 2025-08       |
-| 1.2.3       | 開始發行 macOS/Linux 可執行檔                          | 功能規劃 (Planning)  | 中 (Medium) | 2026-??       |
-| ***2.0.0*** | 增加跨平臺通用 GUI                                    | 功能規劃 (Planning)  | 中 (Medium) | ***2026-??*** |
+| 未來版本        | 增加功能                                                | 開發狀態            | 優先順序       | 預定發布          |
+|-------------|-----------------------------------------------------|-----------------|------------|---------------|
+| ***1.1.6*** | 在 `Func.py` 的 `analyze()` 中新增顯示特定期間的資產變化（總收入/總支出）功能 | 功能規劃 (Planning) | 高 (High)   | ***2025-06*** |
+| 1.2.0       | 增加可以寫入 `Diagnose.Log` 日誌檔案的功能                       | 功能規劃 (Planning) | 高 (High)   | 2025-07       |
+| 1.2.1       | 增加更多例外情形處理                                          | 功能規劃 (Planning) | 高 (High)   | 2025-07       |
+| 1.2.2       | 可執行檔集成華為 HarmonyOS Sans 字體                          | 功能規劃 (Planning) | 高 (High)   | 2025-08       |
+| 1.2.3       | 開始發行 macOS/Linux 可執行檔                               | 功能規劃 (Planning) | 中 (Medium) | 2026-??       |
+| ***2.0.0*** | 增加跨平臺通用 GUI                                         | 功能規劃 (Planning) | 中 (Medium) | ***2026-??*** |
 > 實際發布時間可能會因為當下開發情形而有所提前或延後，敬請耐心等候  
 > 如果您有其他的功能需求或建議，歡迎向本存儲庫提出問題 (Issues) 與程式建議 (PR)  
 

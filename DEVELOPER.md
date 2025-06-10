@@ -13,7 +13,7 @@
 ## 1. 環境需求
 - **作業系統**：
     - Microsoft Windows 10+
-    - Apple macOS (AMD64/ARM64)  
+    - Apple macOS
     - Linux
 - **依賴套件**：
     - Python 3.10+（支援 match...case... 語法）  
@@ -22,7 +22,7 @@
 
 ## 2. 安裝配置
 1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載本程式檔案的壓縮檔，解壓縮後放置於適當的位置  
-2. 依據下方的「4. 檔案規範/`Record.csv`」區塊修改 `Record.csv` 後使用 UTF-8 編碼存檔，使其符合您的真實帳目內容  
+2. 依據下方的「4. 檔案規範/`Record.csv`」區塊新增或修改 `Record.csv` 後使用 UTF-8 編碼存檔，使其符合您的真實帳目內容  
      > 您也可以選擇直接透過本程式新增條目，而不用手動修改 `Record.csv`  
 3. 確認您的 `Record.csv` 檔案與解壓縮後的 `Main.py` 檔案放置於同一文件夾路徑下，並且此文件夾同時包含程式運行時的其他必備檔案  
 4. 請確認您的電腦中已安裝 Python (>=3.10)，若是尚未安裝，可至 [Download Python](https://www.python.org/downloads/) 網頁下載安裝適合您作業系統的 Python 版本  

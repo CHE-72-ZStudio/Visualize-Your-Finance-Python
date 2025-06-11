@@ -128,7 +128,7 @@ def rank_data(original_list, analyze_cat, num):
     print("\033[0m")  # 還原一般輸出格式，移除顏色效果，同時可以進行換行的分隔作用
 
 
-def write_record(flow, reocrd_cat):  #TODO: complete this in Ver1.1.X
+def write_record(flow, reocrd_cat):
     """
     用於 Main.py 呼叫的新增紀錄函數，會將使用者輸入的帳目數據儲存至 Record.csv，以供使用者後續分析數據使用
 
@@ -227,18 +227,31 @@ def pretreat():
     # 如果出錯橫列號列表不為空，則輸出包含所有出錯橫列編號的錯誤訊息
     if error_row:
         print("\033[38;5;208m讀取 ", end="")
-        for row in error_row:
-            print("{}".format(row), end=", ")  # TODO:adjust the fromat for the last element
-        print(" 橫列時出現異常，程式將忽略該筆資料，請檢查您的檔案是否完全符合格式要求\033[0m")
+        print(", ".join(str(row) for row in error_row), end="")  # 由 GitHub Copilot 提供建議，使用「列表建構 List Comprehension」的邏輯
+        print(" 橫列時出現異常\n程式將忽略這些無法讀取的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
-    # 將 支出／收入 數據列表中，每一筆數據的 金流、類別、年份、月份、日期、金額 欄位，都轉換成整數型態
-    # TODO: use try...except... to avoid ValueError and pop those wrong items
+    # 在 支出／收入 數據列表中，嘗試將每一筆數據的 類別、年份、月份、日期、金額 欄位轉換成整數型態
+    # 如果出現無法轉換成整數的項目數據，該筆數據將會被程式捨棄，以避免因轉換出錯而意外終止程式運行
+    # TODO: 進行更詳盡的邊界檢查，如不合理的 類別、年份、月份、日期、金額 欄位
+    int_error = 0  # 無法正確轉換成整數的帳目數量，方便進行錯誤訊息輸出
     for outcome in outcome_list:
-        for p in range(1, 6):
-            outcome[p] = int(outcome[p])
+        try:
+            for p in range(1, 6):
+                outcome[p] = int(outcome[p])
+        except ValueError:
+            outcome_list.remove(outcome)
+            int_error += 1
     for income in income_list:
-        for p in range(1, 6):
-            income[p] = int(income[p])
+        try:
+            for p in range(1, 6):
+                income[p] = int(income[p])
+        except ValueError:
+            income_list.remove(income)
+            int_error += 1
+    # 如果出錯帳目數量不為 0，則輸出包含出錯帳目數量的錯誤訊息
+    if int_error:
+        print("\033[38;5;208m有 {} 筆數據的 金流、類別、年份、月份、日期、金額 欄位，無法正確轉換成整數型態")
+        print("程式將忽略這些無法轉換的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
     year_set = set()  # 製造一個集合，利用集合會自動去除重複元素的特性
 

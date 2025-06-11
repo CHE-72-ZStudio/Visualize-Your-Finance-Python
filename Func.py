@@ -460,7 +460,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
-                for y in analyze_year:
+                for y in range(analyze_year[0], analyze_year[-1] + 1):  # 改為使用 range 的方式，避免漏掉某些年份而導致顯示圖表異常
                     for m in month_list:
                         temp = 0  # 宣告該年月總金額的暫存總和變數
                         for_list = filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表

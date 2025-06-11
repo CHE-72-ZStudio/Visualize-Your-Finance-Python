@@ -14,33 +14,34 @@ if __name__ == "__main__":  # 如果使用者誤啟動本程式
     exit(2)  # 呼叫系統正常結束本程式運行
 
 
-def axis_line(y_list, x_range, x_name):
+def axis_line(y_list, x_name):
     """
     用於繪製隨時間變化的折線圖函數
 
     參數：
         * y_list (list)：要繪製的數據資料
-        * x_range (list)：確保繪圖間隔符合預期
-        * x_name (list)：要繪製的時間刻度
+        * x_name (list)：要繪製的時間刻度座標（可能為年、月、日、年-月）
     """
     plt.plot(x_name, y_list)  # 顯示時間標籤與數據資料
-    plt.xticks(x_range)  # 定義繪圖間隔
+    plt.xticks(x_name)  # 定義繪圖間隔
+
+    if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊
+        plt.xticks(rotation=72, ha="right")
+
     plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
     plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便檢視
     plt.show()  # 顯示圖表
 
 
-def axis_bar(y_list, x_range, x_name):
+def axis_bar(y_list, x_name):
     """
     用於繪製不同類別的長條圖函數
 
     參數：
         * y_list (list)：要繪製的數據資料
-        * x_range (list)：確保繪圖間隔符合預期
         * x_name (list)：要繪製的類別刻度
     """
     plt.bar(x_name, y_list)  # 顯示類別標籤與數據資料
-    plt.xticks(x_range)  # 定義繪圖間隔
     plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
     plt.show()  # 顯示圖表
 

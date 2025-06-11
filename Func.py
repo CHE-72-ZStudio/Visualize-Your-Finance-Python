@@ -163,12 +163,12 @@ def write_record(flow, reocrd_cat):
             if 1 <= month <= 12:
                 pass
             else:  # 在輸入月份變數超出正常範圍時拋出例外
-                raise Exception
+                raise RangeError
             day = int(input("您想要輸入 {} 年 {} 月哪一天的 {} 資料？".format(year, month, reocrd_cat[cat - 1])))
             if 1 <= day <= 31:
                 pass
             else:  # 在輸入日期變數超出正常範圍時拋出例外
-                raise Exception
+                raise RangeError
 
             amount = input("您想要輸入在 {} 年 {} 月 {} 日 {} 的金額數目是多少 NT$？".format(year, month, day, reocrd_cat[cat - 1]))
             # 檢查使用者輸入的內容是否為純數字（不包含負號與小數點），若否則拋出例外
@@ -176,11 +176,14 @@ def write_record(flow, reocrd_cat):
                 amount = int(amount)
             else:
                 raise ValueError
+        except RangeError:
+            print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            continue  # 回到「數據輸入平臺」
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「數據輸入平臺」
         except Exception:  # 如果使用者輸入超出正常範圍的內容
-            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「數據輸入平臺」
 
         item = input("您想要輸入此筆 {} NT${} 的 項目名稱／註記 為何？".format(reocrd_cat[cat - 1], amount))
@@ -347,12 +350,15 @@ def cat_question(cat_list):
             if 0 < cat <= len(cat_list):
                 pass
             else:  # 在輸入內容超出正常範圍時拋出例外
-                raise Exception
+                raise RangeError
+        except RangeError:  # 如果使用者輸入超出正常範圍的內容
+            print("\033[38;5;197m您的輸入內容超出正常範圍，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+            continue  # 回到迴圈的開頭，繼續重新輸入
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
             print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
             continue  # 回到迴圈的開頭，繼續重新輸入
-        except Exception:  # 如果使用者輸入超出正常範圍的內容
-            print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
+        except Exception:
+            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「類別選擇平臺」\033[0m\a\n")  # 輸出提示訊息，讓使用者重新輸入
             continue  # 回到迴圈的開頭，繼續重新輸入
         else:
             flag = False  # 結束無窮迴圈的運行
@@ -405,9 +411,6 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                except Exception:  # 如果使用者輸入超出正常範圍的內容
-                    print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
-                    continue  # 回到「時間選擇平臺」
                 temp_list = filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
@@ -420,7 +423,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= month <= 12:
                         pass
                     else:  # 在輸入月份變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -439,7 +445,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= day <= 31:
                         pass
                     else:  # 在輸入日期變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -467,7 +476,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= month <= 12:
                         pass
                     else:  # 在輸入月份變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -486,12 +498,15 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= month <= 12:
                         pass
                     else:  # 在輸入月份變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
                     day = int(input("您想要分析每年 {} 月哪一天的數據資料？".format(month)))
                     if 1 <= day <= 31:
                         pass
                     else:  # 在輸入日期變數超出正常範圍時拋出例外
                         raise Exception
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -511,7 +526,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= day <= 31:
                         pass
                     else:  # 在輸入日期變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -531,12 +549,15 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     if 1 <= month <= 12:
                         pass
                     else:  # 在輸入月份變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
                     day = int(input("您想要分析 {} 年 {} 月哪一天的數據資料？".format(year, month)))
                     if 1 <= day <= 31:
                         pass
                     else:  # 在輸入日期變數超出正常範圍時拋出例外
-                        raise Exception
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」

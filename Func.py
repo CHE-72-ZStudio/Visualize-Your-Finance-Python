@@ -221,6 +221,11 @@ def pretreat():
             # 存取迭代器內的數據串列，並嘗試放到支出／收入 數據列表
             for r in rows_iterator:
                 row_num += 1  # 讀取橫列號增加 1，對應到現在正在讀取的實際列號
+                # 由 Gemini Code Assist 提供建議，跳過空列以避免後續進行數據轉換時的 IndexError
+                if not r:
+                    error_rows.append(row_num)
+                    continue
+
                 if r[0] == "1":  # 如果開頭為 "1"，表示這是一筆支出的數據
                     outcome_read.append(r)  # 將其附加至支出數據列表，方便後續存取
                 elif r[0] == "2":  # 如果開頭為 "2"，表示這是一筆收入的數據
@@ -286,7 +291,7 @@ def pretreat():
                 raise RangeError  # 使用自定的例外，表示數值超出合理範圍
             if not (1 <= income[4] <= 31):  # 日期欄位對應的檢查
                 raise RangeError  # 使用自定的例外，表示數值超出合理範圍
-            if income[5] < 0:  # 金額欄位對應的檢查，分析時沒必要存放不為正的金額
+            if income[5] <= 0:  # 金額欄位對應的檢查，分析時沒必要存放不為正的金額
                 raise RangeError  # 使用自定的例外，表示數值超出合理範圍
         except RangeError:
             range_error += 1

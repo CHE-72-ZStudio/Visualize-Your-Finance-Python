@@ -240,7 +240,7 @@ def pretreat():
 
     # 如果出錯橫列號列表不為空，則輸出包含所有出錯橫列編號的錯誤訊息
     if error_rows:
-        print("\033[38;5;208m讀取 \"Record.csv\" 時，在以下這些橫列", end="")
+        print("\033[38;5;208m讀取 \"Record.csv\" 時，在以下這些橫列 ", end="")
         print(", ".join(str(row) for row in error_rows), end="")  # 由 GitHub Copilot 提供建議，使用「列表建構 List Comprehension」的邏輯
         print(" 中發現異常\n程式將忽略這些無法讀取的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
@@ -389,8 +389,8 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         temp_list = analyze_list  # 定義暫存數據列表，避免更改原始分析數據列表
         line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤
-        year, month, day = 0, 0, 0  # 預先定義 年、月、日 時間段變數  # TODO: delete these ints after check
-        cat = -1  # 預先定義 特定分析類別 變數  # TODO: delete this int after check
+        #year, month, day = None, None, None  # 預先定義 年、月、日 時間段變數  # TODO: delete these ints after check
+        #cat = None  # 預先定義 特定分析類別 變數  # TODO: delete this int after check
 
         print("\n這裡是「時間選擇平臺」，請選擇您想分析的時間段")  # 輸出「時間選擇平臺」的提示訊息
         print_list(period_list)  # 呼叫列表印出函式，印出「時間選擇平臺」的選單列表
@@ -646,6 +646,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             case 7:  # 分析7：總體細項排名表
                 try:
                     rank = int(input("您想比較前幾筆資料？"))  # 讀取輸入並轉換成整數
+                    if rank <= 0:
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -659,6 +664,12 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     continue  # 回到「時間選擇平臺」
                 try:
                     rank = int(input("您想比較前幾筆資料？"))  # 讀取輸入並轉換成整數
+                    if rank <= 0:
+                        raise RangeError
+                except RangeError:  # 如果使用者輸入無法轉換成整數的內容
+                    print(
+                        "\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+                    continue  # 回到「時間選擇平臺」
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」

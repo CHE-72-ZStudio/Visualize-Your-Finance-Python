@@ -36,6 +36,14 @@ day_list = [i for i in range(1, 32)]  # 日期列表（後續繪圖座標軸用�
 month_list = [i for i in range(1, 13)]  # 月份列表（後續繪圖座標軸用）
 outcome_year, income_year = list(), list()  # 支出／收入 年分列表，用於存放從檔案中讀取到的年分（後續繪圖座標軸用）
 
+
+class RangeError(ValueError):
+    """
+    當數值超出自定義的合理範圍時拋出的例外，繼承自內建的數值錯誤。
+    """
+    pass
+
+
 if __name__ == "__main__":  # 如果使用者誤啟動本程式
     print("\033[38;5;197m這是 Main.py 呼叫的模組\n請改為運行 Main.py，而非直接運行本程式\n我們即將結束此模組的運行\033[0m")  # 輸出提示訊息提醒使用者正確使用方式
     exit(2)  # 呼叫系統正常結束本程式運行
@@ -200,58 +208,100 @@ def pretreat():
     """
     # 嘗試開啟 Record.csv 檔案為 record 句柄，否則輸出錯誤訊息並直接結束程式（因為缺少該檔案，程式後續無法執行）
     try:
-        record = open("Record.csv", "r", newline="", encoding="UTF-8")
+        # 由 Gemini Code Assist 提供建議，調整開啟檔案的邏輯，避免發生其他異常時未能正確關閉文件
+        with open("Record.csv", "r", newline="", encoding="UTF-8") as record:
+            rows_iterator = csv.reader(record)  # 使用 csv.reader 讀取 record 數據並儲存到迭代器
+            outcome_read, income_read = list(), list()  # 收集從 CSV 讀取的原始數據的臨時列表
+            row_num = 0  # 現在的讀取橫列號，方便進行錯誤訊息輸出
+            error_rows = list()  # 出錯橫列號列表，存放讀取時無法進行轉換的橫列號
+
+            # 存取迭代器內的數據串列，並嘗試放到支出／收入 數據列表
+            for r in rows_iterator:
+                row_num += 1  # 讀取橫列號增加 1，對應到現在正在讀取的實際列號
+                if r[0] == "1":  # 如果開頭為 "1"，表示這是一筆支出的數據
+                    outcome_read.append(r)  # 將其附加至支出數據列表，方便後續存取
+                elif r[0] == "2":  # 如果開頭為 "2"，表示這是一筆收入的數據
+                    income_read.append(r)  # 將其附加至收入數據列表，方便後續存取
+                else:  # 否則，此檔案內容應有誤
+                    error_rows.append(row_num)  # 將錯誤列號存放到出錯橫列號列表
     except FileNotFoundError:
         print("\033[38;5;197m開啟 \"Record.csv\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
         print("請確保 \"Record.csv\" 與本程式元件放在同一資料夾下，以利程式正確讀取記帳檔案")
         print("\n程序運行出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")
         sys.exit(2)
 
-    rows_iterator = csv.reader(record)  # 使用 csv.reader 讀取 record 數據並儲存到迭代器
-    global income_year, outcome_year  # 確保能夠正確讀取與修改全域列表
-    row_num = 0  # 現在的讀取橫列號，方便進行錯誤訊息輸出
-    error_row = list()  # 出錯橫列號列表，存放讀取時無法進行轉換的橫列號
-
-    # 存取迭代器內的數據串列，並嘗試放到支出／收入 數據列表
-    for r in rows_iterator:
-        if r[0] == "1":  # 如果開頭為 "1"，表示這是一筆支出的數據
-            outcome_list.append(r)  # 將其附加至支出數據列表，方便後續存取
-        elif r[0] == "2":  # 如果開頭為 "2"，表示這是一筆收入的數據
-            income_list.append(r)  # 將其附加至收入數據列表，方便後續存取
-        else:  # 否則，此檔案內容應有誤
-            error_row.append(row_num + 1)  # 將錯誤列號存放到出錯橫列號列表
-        row_num += 1  # 讀取橫列號增加 1，表示讀取到下一列
-
-    record.close()  # 關閉 record 句柄，避免出現檔案資源未正確釋放的問題
-
     # 如果出錯橫列號列表不為空，則輸出包含所有出錯橫列編號的錯誤訊息
-    if error_row:
-        print("\033[38;5;208m讀取 ", end="")
-        print(", ".join(str(row) for row in error_row), end="")  # 由 GitHub Copilot 提供建議，使用「列表建構 List Comprehension」的邏輯
-        print(" 橫列時出現異常\n程式將忽略這些無法讀取的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
+    if error_rows:
+        print("\033[38;5;208m讀取 \"Record.csv\" 時，在以下這些橫列", end="")
+        print(", ".join(str(row) for row in error_rows), end="")  # 由 GitHub Copilot 提供建議，使用「列表建構 List Comprehension」的邏輯
+        print(" 中發現異常\n程式將忽略這些無法讀取的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
     # 在 支出／收入 數據列表中，嘗試將每一筆數據的 類別、年份、月份、日期、金額 欄位轉換成整數型態
+    # 如果缺少 類別、年份、月份、日期、金額 任一欄位，該筆數據將會被程式捨棄，以避免因轉換出錯而意外終止程式運行（缺少項目名稱欄位是可以被允許的）
     # 如果出現無法轉換成整數的項目數據，該筆數據將會被程式捨棄，以避免因轉換出錯而意外終止程式運行
-    # TODO: 進行更詳盡的邊界檢查，如不合理的 類別、年份、月份、日期、金額 欄位
+    # 如果在 類別、月份、日期、金額 欄位出現超出合理範圍的內容，該筆數據將會被程式捨棄，以避免圖表與排名顯示異常
+    # 由 Gemini Code Assist 提供建議，不要在 for 迴圈進行的同時移除原列表的元素（避免潛在出錯的可能）
+    # Gemini 建議改為使用 outcome_read/income_read 作為暫存列表，將通過檢查的帳目數據添加至 outcome_list/income_list
+
+    type_error = 0  # 缺少重要欄位的帳目數量，方便進行錯誤訊息輸出
     int_error = 0  # 無法正確轉換成整數的帳目數量，方便進行錯誤訊息輸出
-    for outcome in outcome_list:
+    range_error = 0  # 整數欄位內容不合理的帳目數量，方便進行錯誤訊息輸出
+
+    global income_year, outcome_year  # 確保能夠正確讀取與修改全域列表
+    # TODO: 2 for-loop do not fit DRY principle, need to implement a function to replace them by asking Gemini
+    for outcome in outcome_read:
         try:
+            if len(outcome) < 6:  # 欄位數量的檢查，避免在轉換為整數時出現 IndexError
+                raise TypeError  # 使用內建的例外，表示欄位缺少（資料類型與預期不同）
             for p in range(1, 6):
                 outcome[p] = int(outcome[p])
-        except ValueError:
-            outcome_list.remove(outcome)
+            if not (1 <= outcome[1] <= len(outcome_cat)):  # 類別欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if not (1 <= outcome[3] <= 12):  # 月份欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if not (1 <= outcome[4] <= 31):  # 日期欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if outcome[5] <= 0:  # 金額欄位對應的檢查，分析時沒必要存放不為正的金額
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+        except RangeError:
+            range_error += 1
+        except ValueError:  # 當欄位中的內容無法正確轉換成整數時會出現的錯誤
             int_error += 1
-    for income in income_list:
+        except TypeError:
+            type_error += 1
+        else:
+            outcome_list.append(outcome)
+    for income in income_read:
         try:
+            if len(income) < 6:  # 欄位數量的檢查，避免在轉換為整數時出現 IndexError
+                raise TypeError  # 使用內建的例外，表示欄位缺少（資料類型與預期不同）
             for p in range(1, 6):
                 income[p] = int(income[p])
-        except ValueError:
-            income_list.remove(income)
+            if not (1 <= income[1] <= len(income_cat)):  # 類別欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if not (1 <= income[3] <= 12):  # 月份欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if not (1 <= income[4] <= 31):  # 日期欄位對應的檢查
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+            if income[5] < 0:  # 金額欄位對應的檢查，分析時沒必要存放不為正的金額
+                raise RangeError  # 使用自定的例外，表示數值超出合理範圍
+        except RangeError:
+            range_error += 1
+        except ValueError:  # 當欄位中的內容無法正確轉換成整數時會出現的錯誤
             int_error += 1
+        except TypeError:
+            type_error += 1
+        else:
+            income_list.append(income)
     # 如果出錯帳目數量不為 0，則輸出包含出錯帳目數量的錯誤訊息
+    if type_error:
+        print("\033[38;5;208m有 {} 筆數據缺少 類別、年份、月份、日期、金額 欄位，無法正確讀取與轉換".format(type_error))
     if int_error:
-        print("\033[38;5;208m有 {} 筆數據的 金流、類別、年份、月份、日期、金額 欄位，無法正確轉換成整數型態")
-        print("程式將忽略這些無法轉換的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
+        print("\033[38;5;208m有 {} 筆數據的 類別、年份、月份、日期、金額 欄位，無法正確轉換成整數型態".format(int_error))
+    if range_error:
+        print("\033[38;5;208m有 {} 筆數據的 類別、月份、日期、金額 欄位，數值內容超出合理範圍".format(range_error))
+    if type_error + int_error + range_error:
+        print("程式將忽略這些異常的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
     year_set = set()  # 製造一個集合，利用集合會自動去除重複元素的特性
 

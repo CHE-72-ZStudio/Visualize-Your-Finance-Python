@@ -603,7 +603,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;208m無法在這個時間段進行這項分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                     continue  # 回到「時間選擇平臺」
                 else:
-                    axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case 2:  # 分析2：各類折線走勢圖
                 if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
                     print("\033[38;5;208m無法在這個時間段進行這項分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
@@ -630,7 +630,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 continue  # 回到「時間選擇平臺」
             case 5:  # 分析5：總體花費金額長條圖
                 temp_list = sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
-                axis_bar(temp_list, analyze_num, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
+                axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
                 continue  # 回到「時間選擇平臺」
             case 6:  # 分析6：總體花費次數長條圖
                 bar_list = list()  # 預先定義後續長條圖使用的數值列表為空列表
@@ -641,7 +641,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                         if c == data[1]:  # 對於符合目前遍歷類別的數據
                             temp += 1
                     bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
-                axis_bar(bar_list, analyze_num, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
+                axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
                 continue  # 回到「時間選擇平臺」
             case 7:  # 分析7：總體細項排名表
                 try:
@@ -689,13 +689,13 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
         match (period, method):
             case (1, 2):
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (2, 2):
                 line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (3, 2):
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (4, 2):
                 line_list = list()  # 重新定義 Y 軸數值為空列表
                 # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
@@ -706,13 +706,13 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                         for row in for_list:  # 對於符合目前遍歷進度的數據
                             temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
                         line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (5, 2):
                 line_list = sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (6, 2):
                 line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                axis_line(line_list, line_axis, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             # 由於其他輸入錯誤的情形已在前面進行檢測與排除，此處不再放置其他判斷條件
             # case (_, _):
 

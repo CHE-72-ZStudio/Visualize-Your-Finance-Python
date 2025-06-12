@@ -22,7 +22,7 @@ from Plot import *
 
 period_list = ["顯示使用說明", "分析所有紀錄", "特定年分的紀錄", "特定月份的紀錄", "特定日期的紀錄",
                "特定年月的紀錄", "特定月日的紀錄", "特定年日的紀錄", "特定年月日的紀錄", "返回上層選單", "結束程式運行"]  # 「時間選擇平臺」選單列表
-method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖",
+method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖", "顯示資產變化"
                "總體流動金額長條圖", "總體流動次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
 # TODO: method_list 新增 顯示資產變化(期間總收入/總支出) 為 case 5 並更新 method_manual 與 USER.md
 # TODO: 也許可以使用 sum_data() 進行加總，較為 Pythonic？
@@ -118,7 +118,23 @@ def print_list(content_list, offest=0):  # TODO more Pythonic?
             print("\033[38;5;43m{}: {}".format(i, content_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
 
 
-def _sum_data(original_list, item_list, position):
+def sum_data(original_list):
+    """
+    公開函數：將接收到的分析數據列表進行所有金額的加總後回傳總金額
+
+    參數：
+        * original_list (list)：要讀取後進行所有金額加總的原始分析數據列表
+
+    回傳：
+        * total (int)：按照原始項目順序加總後的列表，可作為後續顯示資產變化時使用
+    """
+    total = int()  # 宣告空的回傳整數
+    for row in original_list:  # 對於數據列表中的每一筆帳目
+        total += row[5]  # 總和變數加上此帳目的金額
+    return total  # 回傳總和變數，可作為後續顯示資產變化時使用
+
+
+def _sum_order_data(original_list, item_list, position):
     """
     內部函數：針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的加總後，回傳加總後符合原始項目順序的列表
 
@@ -453,21 +469,21 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print(period_manual)  # 印出「時間選擇平臺」的對應說明文件
                     continue  # 回到「時間選擇平臺」
                 case 1:  # 時間1：分析所有紀錄
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 2:  # 時間2：特定年分的紀錄
                     year = check_input("您想要分析哪一年的數據資料？")  # 呼叫 check_input() 函數檢查使用者輸入後存放至 年 變數，傳入詢問內容
                     temp_list = _filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
-                    line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
                 case 3:  # 時間3：特定月份的紀錄
                     month = check_input("您想要分析每年的哪一月的數據資料？", 1, 12)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 月 變數，依序傳入 詢問內容、最小數值、最大數值
                     temp_list = _filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 4:  # 時間4：特定日期的紀錄
                     day = check_input("您想要分析每年每月哪一天的數據資料？", 1, 31)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -491,7 +507,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     temp_list = _filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
-                    line_list = _sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = day_list, day_list  # X 軸間距列表與 X 軸標籤列表定義為分析日期列表
                 case 6:  # 時間6：特定月日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 月、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -501,7 +517,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     temp_list = _filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 7:  # 時間7：特定年日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -511,7 +527,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     temp_list = _filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
-                    line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
                 case 8:  # 時間8：特定年月日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、月、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -552,7 +568,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
                 case 3:  # 分析3：總體金額圓餅佔比圖
-                    temp_list = _sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
+                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
                 case 4:  # 分析4：總體次數圓餅佔比圖
                     pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
@@ -564,10 +580,12 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
-                case 5:  # 分析5：總體花費金額長條圖
-                    temp_list = _sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
+                case 5:  # 分析5：顯示資產變化  #TODO
+                    pass
+                case 6:  # 分析6：總體花費金額長條圖
+                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 6:  # 分析6：總體花費次數長條圖
+                case 7:  # 分析7：總體花費次數長條圖
                     bar_list = list()  # 預先定義後續長條圖使用的數值列表為空列表
                     # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入長條圖數值列表
                     for c in analyze_num:
@@ -577,20 +595,20 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 7:  # 分析7：總體細項排名表
+                case 8:  # 分析8：總體細項排名表
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 8:  # 分析8：各類細項排名表
+                case 9:  # 分析9：各類細項排名表
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                     _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 9:  # 分析9：返回上層選單
+                case 10:  # 分析10：返回上層選單
                     print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     continue  # 回到「時間選擇平臺」
-                case 10:  # 分析10：結束程式運行
+                case 11:  # 分析11：結束程式運行
                     print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     sys.exit(0)  # 呼叫系統正常結束本程式運行
                 case _:  # 其他錯誤的分析選擇輸入，應該不會走到這裡 #TODO Delete this after check
@@ -601,13 +619,13 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
             # TODO: here can be more pythonic by asking Google Gemini Code Assist
             match (period, method):
                 case (1, 2):
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 case (2, 2):
-                    line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 case (3, 2):
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 case (4, 2):
                     line_list = list()  # 重新定義 Y 軸數值為空列表
@@ -621,10 +639,10 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                             line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 case (5, 2):
-                    line_list = _sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 case (6, 2):
-                    line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
                 # 由於其他輸入錯誤的情形已在前面進行檢測與排除，此處不再放置其他判斷條件
                 # case (_, _):

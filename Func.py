@@ -3,12 +3,12 @@ Func.py
 此模組提供處理記帳數據的相關功能，包含：
 
 * print_list：遍歷印出列表，並顯示頓號與箭頭
-* sum_data：針對數據列表的特定欄位進行加總後，回傳加總後的列表
-* filter_data：根據不同的標籤需求過濾原分析數據列表並回傳
-* rank_data：根據不同的數據資料與需求筆數，對數據資料的金額進行排名並印出
+* _sum_data：針對數據列表的特定欄位進行加總後，回傳加總後的列表
+* -filter_data：根據不同的標籤需求過濾原分析數據列表並回傳
+* _rank_data：根據不同的數據資料與需求筆數，對數據資料的金額進行排名並印出
 * write_record：新增紀錄函數，將接收到的帳目數據儲存至 Record.csv
 * pretreat：預處理函數，將讀取到的數據儲存至全域列表
-* cat_question：詢問使用者的「類別選擇平臺」，並回傳最終選擇的類別編號
+* _cat_question：詢問使用者的「類別選擇平臺」，並回傳最終選擇的類別編號
 * analyze：分析函數，本程式的核心分析邏輯部分
 """
 
@@ -49,6 +49,13 @@ if __name__ == "__main__":  # 如果使用者誤啟動本程式
     exit(2)  # 呼叫系統正常結束本程式運行
 
 
+def _check_int_input():
+    pass
+
+def _check_list():
+    pass
+
+
 def print_list(content_list):
     """
     用於遍歷印出列表，並能顯示中文頓號與輸入用箭頭
@@ -63,7 +70,7 @@ def print_list(content_list):
             print("\033[38;5;43m{}: {}".format(i, content_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
 
 
-def sum_data(original_list, item_list, position):
+def _sum_data(original_list, item_list, position):
     """
     針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的加總後，回傳加總後符合原始項目順序的列表
 
@@ -88,7 +95,7 @@ def sum_data(original_list, item_list, position):
     return data_list  # 回傳按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
 
 
-def filter_data(original_list, year=None, month=None, day=None, category=None):
+def _filter_data(original_list, year=None, month=None, day=None, category=None):
     """
     根據不同的標籤需求過濾原分析數據列表，並回傳過濾後的數據列表
     由 Gemini Code Assist 提供建議，使用「列表建構 List Comprehension」的邏輯
@@ -115,7 +122,7 @@ def filter_data(original_list, year=None, month=None, day=None, category=None):
     return filtered_list  # 回傳完成篩選後的分析數據列表
 
 
-def rank_data(original_list, analyze_cat, num):
+def _rank_data(original_list, analyze_cat, num):
     """
     根據不同的數據資料與需求筆數，對數據資料的金額進行排名並印出符合需求數量的細項
     由 Gemini Code Assist 提供建議，使用「匿名函數 Lambda」的方式
@@ -155,7 +162,7 @@ def write_record(flow, reocrd_cat):
 
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         print("\033[38;5;43m這裡是「數據輸入平臺」，您正在輸入{}帳目\033[0m".format(flow_name))  # 輸出「數據輸入平臺」的提示訊息
-        cat = cat_question(reocrd_cat)  # 呼叫「類別選擇平臺」取得所需類別
+        cat = _cat_question(reocrd_cat)  # 呼叫「類別選擇平臺」取得所需類別
 
         try:  # 讀取使用者輸入至 年、月、日、金額 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
             year = int(input("您想要輸入哪一年的 {} 資料？".format(reocrd_cat[cat - 1])))
@@ -333,7 +340,7 @@ def pretreat():
     print("\033[38;5;47m程式已完成從 \"Record.csv\" 中提取數據\033[0m")  # 輸出提示訊息，讓使用者得知程式運行進度
 
 
-def cat_question(cat_list):
+def _cat_question(cat_list):
     """
     用於詢問使用者特定類別的「類別選擇平臺」，並回傳最終選擇的類別編號
 
@@ -393,8 +400,6 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         temp_list = analyze_list  # 定義暫存數據列表，避免更改原始分析數據列表
         line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤
-        #year, month, day = None, None, None  # 預先定義 年、月、日 時間段變數  # TODO: delete these ints after check
-        #cat = None  # 預先定義 特定分析類別 變數  # TODO: delete this int after check
 
         print("\n這裡是「時間選擇平臺」，請選擇您想分析的時間段")  # 輸出「時間選擇平臺」的提示訊息
         print_list(period_list)  # 呼叫列表印出函式，印出「時間選擇平臺」的選單列表
@@ -412,7 +417,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 print(period_manual)  # 印出「時間選擇平臺」的對應說明文件
                 continue  # 回到「時間選擇平臺」
             case 1:  # 時間1：分析所有紀錄
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
             case 2:  # 時間2：特定年分的紀錄
                 try:  # 讀取使用者輸入至 年 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -420,11 +425,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
+                temp_list = _filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
             case 3:  # 時間3：特定月份的紀錄
                 try:  # 讀取使用者輸入至 月 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -442,11 +447,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
+                temp_list = _filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
             case 4:  # 時間4：特定日期的紀錄
                 try:  # 讀取使用者輸入至 日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -464,7 +469,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(analyze_list, day=day)  # 以所需 日 變數過濾暫存數據列表
+                temp_list = _filter_data(analyze_list, day=day)  # 以所需 日 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -472,7 +477,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 for y in range(analyze_year[0], analyze_year[-1] + 1):  # 改為使用 range 的方式，避免漏掉某些年份而導致顯示圖表異常
                     for m in month_list:
                         temp = 0  # 宣告該年月總金額的暫存總和變數
-                        for_list = filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
+                        for_list = _filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
                         for row in for_list:  # 對於符合目前遍歷進度的數據
                             temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
                         line_name.append("{}-{}".format(y, m))  # 將該時間段的名稱加入 X 軸標籤列表的末尾
@@ -495,11 +500,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
+                temp_list = _filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                line_list = sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = day_list, day_list  # X 軸間距列表與 X 軸標籤列表定義為分析日期列表
             case 6:  # 時間6：特定月日的紀錄
                 try:  # 讀取使用者輸入至 月、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -522,11 +527,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
+                temp_list = _filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
             case 7:  # 時間7：特定年日的紀錄
                 try:  # 讀取使用者輸入至 年、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -545,11 +550,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容超出正常範圍或出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
+                temp_list = _filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
             case 8:  # 時間8：特定年月日的紀錄
                 try:  # 讀取使用者輸入至 年、月、日 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -573,7 +578,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except Exception:  # 如果使用者輸入超出正常範圍的內容
                     print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                temp_list = filter_data(analyze_list, year=year, month=month, day=day)  # 以所需 年、月、日 變數過濾暫存數據列表
+                temp_list = _filter_data(analyze_list, year=year, month=month, day=day)  # 以所需 年、月、日 變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -604,21 +609,21 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 continue  # 回到「時間選擇平臺」
             case 1:  # 分析1：總體折線走勢圖
                 if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
-                    print("\033[38;5;208m無法在這個時間段進行這項分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
+                    print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                     continue  # 回到「時間選擇平臺」
                 else:
                     axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case 2:  # 分析2：各類折線走勢圖
                 if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
-                    print("\033[38;5;208m無法在這個時間段進行這項分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
+                    print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                     continue  # 回到「時間選擇平臺」
-                cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
             case 3:  # 分析3：總體金額圓餅佔比圖
-                temp_list = sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
+                temp_list = _sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                 axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
                 continue  # 回到「時間選擇平臺」
             case 4:  # 分析4：總體次數圓餅佔比圖
@@ -633,7 +638,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
                 continue  # 回到「時間選擇平臺」
             case 5:  # 分析5：總體花費金額長條圖
-                temp_list = sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
+                temp_list = _sum_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                 axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
                 continue  # 回到「時間選擇平臺」
             case 6:  # 分析6：總體花費次數長條圖
@@ -659,11 +664,11 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 else:
-                    rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
+                    _rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
                     continue  # 回到「時間選擇平臺」
             case 8:  # 分析8：各類細項排名表
-                cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                 if len(temp_list) == 0:  # 如果經過篩選後的數據列表為空，則無法分析，需要停止操作並返回「時間選擇平臺」
                     print("\033[38;5;208m數據集當中沒有符合您輸入條件的資料，無法進行分析，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
@@ -679,7 +684,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
                 else:
-                    rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
+                    _rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
                     continue  # 回到「時間選擇平臺」
             case 9:  # 分析9：返回上層選單
                 print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
@@ -694,13 +699,13 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
         # 若要分析各類折線走勢圖，須要重新進行各時間段 Y 軸數值的計算
         match (period, method):
             case (1, 2):
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (2, 2):
-                line_list = sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (3, 2):
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (4, 2):
                 line_list = list()  # 重新定義 Y 軸數值為空列表
@@ -708,16 +713,16 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 for y in analyze_year:
                     for m in month_list:
                         temp = 0  # 宣告該年月總金額的暫存總和變數
-                        for_list = filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
+                        for_list = _filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
                         for row in for_list:  # 對於符合目前遍歷進度的數據
                             temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
                         line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (5, 2):
-                line_list = sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             case (6, 2):
-                line_list = sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                line_list = _sum_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                 axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
             # 由於其他輸入錯誤的情形已在前面進行檢測與排除，此處不再放置其他判斷條件
             # case (_, _):

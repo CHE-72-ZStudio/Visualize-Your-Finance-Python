@@ -1,6 +1,15 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
+## UNRELEASED ~~V1.2.3 (2025-MM-DD)~~
+### 新增功能 Added
+- 在「分析選擇平臺」新增可以顯示不同時間段與不同類別的 支出／收入 金額總和
+### 已經移除 Removed
+- 移除與 `LICENSE` 內容重複的 `License_EN.txt`，現在輸出英文原版的開源許可時會直接讀取原始的 `LICENSE`
+- 將 `License_ZH.txt` 重新命名為 `LICENSE_ZH`，維持文件命名的一致性
+### 文檔更新 Edited
+- 更新 `USER.md` 以符合最新的程式功能
+
 ## V1.1.20 (2025-06-12) 大幅提升程式的健壯性與修復大量潛在的錯誤
 ### 功能修復 Fixed
 - 修復了當 `Record.csv` 的 類別、年份、月份、日期、金額 欄位有缺失時，可能會導致程式意外結束的問題
@@ -28,16 +37,16 @@
 
 ## V1.1.5 (2025-06-10) 具備新增帳目的功能
 ### 新增功能 Added
-- 在 `Func.py` 中新增 `write_record()` 函數，現在可以使用本程式在 `Record.csv` 內新增帳目數據  
+- 在 `Func.py` 中新增 `write_record()` 函數，現在可以使用本程式在 `Record.csv` 內新增帳目數據
 - 開始正式發行能在 Windows 上運行的可執行檔壓縮包
 ### 提升進步 Improved
-- 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查，可以應對數據列表為空的情形  
-- 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度  
+- 在 `Func.py` 中的 `analyze()`「時間選擇平臺」中新增更為完善的邊界檢查，可以應對數據列表為空的情形
+- 在 `Main.py` 中計算資產時，現在會使用分隔位顯示金額，提升可閱讀性與清晰度
 ### 文檔更新 Edited
-- 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明  
-- 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`  
+- 在 `README.md` 中新增對於「Ask DeepWiki」徽章的描述與免責聲明
+- 移除 `MANUAL.md` ，新增 `USER.md` 與 `DEVELOPER.md`
 ### 貢獻清單 Contributor
-- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ## V1.0.11 (2025-06-08) 修復 UTF-8 錯誤與提升使用者體驗
 ### 新增功能 Added
@@ -57,7 +66,7 @@
 ### 已經移除 Removed
 - 因已完成作業繳交，移除 `MakeRecord.py` 檔案，使其符合一般使用者的使用方式
 ### 貢獻清單 Contributor
-- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ## V1.0.0 (2025-05-29) 首次正式版本發佈
 ### 首次正式版本發佈 First Release
@@ -66,7 +75,7 @@
 ### 棄用淘汰 Deprecated
 - `MakeRecord.py` 檔案為用於產生虛擬的帳目資料供繳交作業時使用，將於下次小版本更新時移除該檔案
 ### 貢獻清單 Contributor
-- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者  
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ### 帳目分析可視化程式（Python），著作權所有 (C) 2025-現在 CHE_72 ZStudio
 #### Visualize Your Finance (Python) , Copytight (C) 2025-present CHE_72 ZStudio.

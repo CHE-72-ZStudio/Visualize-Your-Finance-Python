@@ -51,13 +51,10 @@ if __name__ == "__main__":
                 case 2:  # 功能2：分析收入數據
                     # 呼叫 Func.py 中的 analyze() 函數進行互動分析，依序傳入 收入數據列表、收入類別列表、收入年份列表與收入類別對應編號列表
                     Func.analyze(Func.income_list, Func.income_cat, Func.income_year, range(1, len(Func.income_cat) + 1))
-                case 3:  # 功能3：顯示目前資產  #TODO: 也許可以使用 Func.sum_data() 進行加總，較為 Pythonic？
+                case 3:  # 功能3：顯示目前資產
                     # 遍歷 支出／收入 數據列表的金額部分，計算 支出／收入 金額的總和
-                    outcome_total, income_total = 0, 0
-                    for row in Func.outcome_list:
-                        outcome_total += row[5]
-                    for row in Func.income_list:
-                        income_total += row[5]
+                    outcome_total = Func.sum_data(Func.outcome_list)
+                    income_total = Func.sum_data(Func.income_list)
                     final_total = income_total - outcome_total
 
                     # 輸出計算結果

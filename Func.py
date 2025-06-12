@@ -261,6 +261,8 @@ def pretreat():
         try:
             if len(outcome) < 6:  # 欄位數量的檢查，避免在轉換為整數時出現 IndexError
                 raise TypeError  # 使用內建的例外，表示欄位缺少（資料類型與預期不同）
+            if len(outcome) < 7:  # 由 Gemini Code Assist 提供建議，避免某些數據缺少項目欄位會導致輸出排名時出錯
+                outcome.append("")
             for p in range(1, 6):
                 outcome[p] = int(outcome[p])
             if not (1 <= outcome[1] <= len(outcome_cat)):  # 類別欄位對應的檢查
@@ -283,6 +285,8 @@ def pretreat():
         try:
             if len(income) < 6:  # 欄位數量的檢查，避免在轉換為整數時出現 IndexError
                 raise TypeError  # 使用內建的例外，表示欄位缺少（資料類型與預期不同）
+            if len(income) < 7:  # 由 Gemini Code Assist 提供建議，避免某些數據缺少項目欄位會導致輸出排名時出錯
+                income.append("")
             for p in range(1, 6):
                 income[p] = int(income[p])
             if not (1 <= income[1] <= len(income_cat)):  # 類別欄位對應的檢查
@@ -654,8 +658,9 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                continue  # 回到「時間選擇平臺」
+                else:
+                    rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
+                    continue  # 回到「時間選擇平臺」
             case 8:  # 分析8：各類細項排名表
                 cat = cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                 temp_list = filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
@@ -673,8 +678,9 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 except ValueError:  # 如果使用者輸入無法轉換成整數的內容
                     print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
-                rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                continue  # 回到「時間選擇平臺」
+                else:
+                    rank_data(temp_list, analyze_cat, rank)  # 呼叫 rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
+                    continue  # 回到「時間選擇平臺」
             case 9:  # 分析9：返回上層選單
                 print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                 continue  # 回到「時間選擇平臺」

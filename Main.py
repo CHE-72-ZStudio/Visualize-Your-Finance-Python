@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # 定義 中／英 程式名稱、程式版本號，如果日後有需要更新時，更改此處即可避免缺失遺漏
     program_zh = "帳目分析可視化程式（Python）"
     program_en = "Visualize Your Finance (Python)"
-    version = "1.1.20"
+    version = "1.2.X"
 
     print("歡迎您使用「{}」Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
     print("\033[38;5;208m本程式可用來協助您分析 \"Record.csv\" 中的記帳數據，並使用圖形化的分析顯示結果。\033[0m")  # 輸出中文程式目的
@@ -46,18 +46,18 @@ if __name__ == "__main__":
                 case 0:  # 功能0：顯示使用說明
                     print(func_manual)  # 輸出「功能選擇平臺」簡易使用說明
                 case 1:  # 功能1：分析支出數據
-                    # 呼叫 Func.py 中的 analyze() 函數進行互動分析，依序傳入 支出數據列表、支出類別列表、支出年份列表與支出類別對應編號列表
-                    Func.analyze(Func.outcome_list, Func.outcome_cat, Func.outcome_year, range(1, len(Func.outcome_cat) + 1))
+                    # 呼叫 Func.py 中的 analyze() 函數進行互動分析，依序傳入 支出金流名稱、支出數據列表、支出類別列表、支出年份列表與支出類別對應編號列表
+                    Func.analyze("支出", Func.outcome_list, Func.outcome_cat, Func.outcome_year, range(1, len(Func.outcome_cat) + 1))
                 case 2:  # 功能2：分析收入數據
-                    # 呼叫 Func.py 中的 analyze() 函數進行互動分析，依序傳入 收入數據列表、收入類別列表、收入年份列表與收入類別對應編號列表
-                    Func.analyze(Func.income_list, Func.income_cat, Func.income_year, range(1, len(Func.income_cat) + 1))
+                    # 呼叫 Func.py 中的 analyze() 函數進行互動分析，依序傳入 收入金流名稱、收入數據列表、收入類別列表、收入年份列表與收入類別對應編號列表
+                    Func.analyze("收入", Func.income_list, Func.income_cat, Func.income_year, range(1, len(Func.income_cat) + 1))
                 case 3:  # 功能3：顯示目前資產
-                    # 遍歷 支出／收入 數據列表的金額部分，計算 支出／收入 金額的總和
+                    # 呼叫 Func.py 中的 sum_data() 函數進行數據列表的金額加總，計算 支出／收入 金額的總和
                     outcome_total = Func.sum_data(Func.outcome_list)
                     income_total = Func.sum_data(Func.income_list)
                     final_total = income_total - outcome_total
 
-                    # 輸出計算結果
+                    # 以分隔符方式輸出計算結果
                     print("在您的所有紀錄中：")
                     print("總支出為 NT${:,}，總收入為 NT${:,}".format(outcome_total, income_total))
                     print("目前淨資產為 NT${:,}".format(final_total))

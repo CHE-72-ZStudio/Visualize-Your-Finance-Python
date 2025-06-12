@@ -22,10 +22,9 @@ from Plot import *
 
 period_list = ["顯示使用說明", "分析所有紀錄", "特定年分的紀錄", "特定月份的紀錄", "特定日期的紀錄",
                "特定年月的紀錄", "特定月日的紀錄", "特定年日的紀錄", "特定年月日的紀錄", "返回上層選單", "結束程式運行"]  # 「時間選擇平臺」選單列表
-method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖", "顯示資產變化"
+method_list = ["顯示使用說明", "總體折線走勢圖", "各類折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖", "總體金額總和", "各類金額總和",
                "總體流動金額長條圖", "總體流動次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
-# TODO: method_list 新增 顯示資產變化(期間總收入/總支出) 為 case 5 並更新 method_manual 與 USER.md
-# TODO: 也許可以使用 sum_data() 進行加總，較為 Pythonic？
+# TODO: method_list 新增 顯示資產變化(期間總收入/總支出) 為 case 5, 6 並更新 method_manual 與 USER.md
 
 outcome_cat = ["交通出行", "日常飲食", "購物花費", "帳單繳費", "服務消費", "休閒娛樂", "投資理財", "旅行出遊",
                "教育學習", "居家生活", "票證加值", "社交人情", "商務往來", "醫療保健", "借錢給人", "帳戶轉帳",
@@ -59,15 +58,15 @@ if __name__ == "__main__":  # 如果使用者誤啟動本程式
     exit(2)  # 呼叫系統正常結束本程式運行
 
 
-def check_input(prompt, min=None, max=None):
+def check_input(prompt, range_min=None, range_max=None):
     """
     公開函數：讀取使用者輸入的內容，轉換成整數並進行範圍驗證，在輸入無效或超出範圍時會拋出例外
     由 Gemini Code Assist 提供建議，符合 DRY 原則
 
     參數：
         * prompt (str)：顯示給使用者的提示訊息
-        * min (int, optional)：範圍內出現的最小值
-        * max (int, optional)：範圍內出現的最大值
+        * range_min (int, optional)：範圍內允許出現的最小值
+        * range_max (int, optional)：範圍內允許出現的最大值
 
     回傳：
         * value (int)：通過驗證的整數輸入
@@ -79,9 +78,9 @@ def check_input(prompt, min=None, max=None):
     value = int(input(prompt))  # 讀取使用者輸入後嘗試轉換成整數，若無法轉換會自動拋出 ValueError
 
     # 如果有傳入 最小／最大值，則檢查使用者輸入是否超出範圍，若超出範圍會手動拋出自訂的 RangeError 例外，表示數值超出合理範圍
-    if min is not None and value < min:
+    if range_min is not None and value < range_min:
         raise RangeError
-    if max is not None and value > max:
+    if range_max is not None and value > range_max:
         raise RangeError
 
     return value  # 回傳正確轉換成整數的數值
@@ -161,8 +160,10 @@ def _sum_order_data(original_list, item_list, position):
 
 def _filter_data(original_list, year=None, month=None, day=None, category=None):
     """
-    內部函數：根據不同的標籤需求過濾原分析數據列表，並回傳過濾後的數據列表
-    由 Gemini Code Assist 提供建議，使用「列表建構 List Comprehension」的邏輯
+    內部函數：根據不同的標籤需求過濾原分析數據列表
+    1. 過濾後的數據列表不為空後，回傳過濾後的數據列表
+    2. 過濾後的數據列表為空時，向上傳播來自 _check_list() 的 EmptyError
+    「列表建構 List Comprehension」的邏輯由 Gemini Code Assist 提供建議
 
     參數：
         * original_list (list)：要進行過濾篩選的分析數據列表
@@ -173,6 +174,9 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None):
 
     回傳：
         * filtered_list (list)：完成篩選後的分析數據列表，可以用於繪圖或其他後續操作
+
+    拋出：
+        * EmptyError：如果要回傳的 filtered_list 列表為空時手動拋出的自訂例外（由 _check_list() 傳播）
     """
     filtered_list = original_list  # 建立數據列表以進行後續篩選與回傳
     if year is not None:
@@ -183,7 +187,12 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None):
         filtered_list = [row for row in filtered_list if row[4] == day]  # 僅保留符合日期要求的帳目數據
     if category is not None:
         filtered_list = [row for row in filtered_list if row[1] == category]  # 僅保留符合類別要求的帳目數據
-    return filtered_list  # 回傳完成篩選後的分析數據列表  # TODO 直接在這裡一次性拋出 EmptyError，節省後續 temp_list 多次的檢查?
+
+    # 呼叫 _check_list() 提前檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
+    # 若 filtered_list 為空列表，可利用例外傳播將 EmptyError 送到 analyze() 中進行例外處理
+    _check_list(filtered_list)
+
+    return filtered_list  # 回傳完成篩選後的分析數據列表
 
 
 def _rank_data(original_list, analyze_cat, num):
@@ -441,12 +450,13 @@ def _cat_question(cat_list):
     return cat  # 回傳類別編號，作為後續篩選數據列表時使用
 
 
-def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
+def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
     """
     公開函數：用於 Main.py 呼叫的分析函數，也是本程式的核心分析邏輯部分
     內含「時間選擇平臺」與「分析選擇平臺」，並在必要時呼叫「類別選擇平臺」函數，在完成資料整理後在必要時會呼叫 Plot.py 中的函數進行圖表繪製
 
     參數：
+        * analyze_flow (str)：要分析的 支出／收入 金流名稱，後續以「分析金流名稱」代稱
         * analyze_list (list)：要分析的 支出／收入 數據列表，後續以「分析數據列表」代稱
         * analyze_cat (list)：要分析的 支出／收入 類別列表，後續以「分析類別列表」代稱
         * analyze_year (list)：要分析的 支出／收入 年分列表，後續以「分析年分列表」代稱
@@ -474,21 +484,18 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                 case 2:  # 時間2：特定年分的紀錄
                     year = check_input("您想要分析哪一年的數據資料？")  # 呼叫 check_input() 函數檢查使用者輸入後存放至 年 變數，傳入詢問內容
                     temp_list = _filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
                 case 3:  # 時間3：特定月份的紀錄
                     month = check_input("您想要分析每年的哪一月的數據資料？", 1, 12)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 月 變數，依序傳入 詢問內容、最小數值、最大數值
                     temp_list = _filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 4:  # 時間4：特定日期的紀錄
                     day = check_input("您想要分析每年每月哪一天的數據資料？", 1, 31)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 日 變數，依序傳入 詢問內容、最小數值、最大數值
                     temp_list = _filter_data(analyze_list, day=day)  # 以所需 日 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
                     for y in range(analyze_year[0], analyze_year[-1] + 1):  # 改為使用 range 的方式，避免漏掉某些年份而導致顯示圖表異常
@@ -503,9 +510,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、月 變數，依序傳入 詢問內容、最小數值、最大數值
                     year = check_input("您想要分析哪一年的數據資料？")
                     month = check_input("您想要分析 {} 年哪一月的數據資料？".format(year), 1, 12)
-
                     temp_list = _filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     line_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = day_list, day_list  # X 軸間距列表與 X 軸標籤列表定義為分析日期列表
@@ -513,9 +518,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 月、日 變數，依序傳入 詢問內容、最小數值、最大數值
                     month = check_input("您想要分析每年哪一月的數據資料？", 1, 12)
                     day = check_input("您想要分析每年 {} 月哪一天的數據資料？".format(month), 1, 31)
-
                     temp_list = _filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
@@ -523,9 +526,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、日 變數，依序傳入 詢問內容、最小數值、最大數值
                     year = check_input("您想要分析哪一年的數據資料？")
                     day = check_input("您想要分析 {} 年哪一天的數據資料？".format(year), 1, 31)
-
                     temp_list = _filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
 
                     line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
@@ -534,9 +535,7 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                     year = check_input("您想要分析哪一年的數據資料？")
                     month = check_input("您想要分析 {} 年哪一月的數據資料？".format(year), 1, 12)
                     day = check_input("您想要分析 {} 年 {} 月哪一天的數據資料？".format(year, month), 1, 31)
-
                     temp_list = _filter_data(analyze_list, year=year, month=month, day=day)  # 以所需 年、月、日 變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
                 case 9:  # 時間9：返回上層選單
                     print("\033[38;5;43m正在返回「功能選擇平臺」\033[0m\n\a")  # 輸出提示訊息與通知聲音
                     return  # 回到「功能選擇平臺」
@@ -566,7 +565,6 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                         continue  # 回到「時間選擇平臺」
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
                 case 3:  # 分析3：總體金額圓餅佔比圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
@@ -580,12 +578,18 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
-                case 5:  # 分析5：顯示資產變化  #TODO
-                    pass
-                case 6:  # 分析6：總體花費金額長條圖
+                case 5:  # 分析5：總體金額總和
+                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間的總流動金額
+                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                case 6:  # 分析6：各類金額總和
+                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                    temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間與類別的總流動金額
+                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                case 7:  # 分析7：總體流動金額長條圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 7:  # 分析7：總體花費次數長條圖
+                case 8:  # 分析8：總體流動次數長條圖
                     bar_list = list()  # 預先定義後續長條圖使用的數值列表為空列表
                     # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入長條圖數值列表
                     for c in analyze_num:
@@ -595,20 +599,19 @@ def analyze(analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 8:  # 分析8：總體細項排名表
+                case 9:  # 分析9：總體細項排名表
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 9:  # 分析9：各類細項排名表
+                case 10:  # 分析10：各類細項排名表
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    _check_list(temp_list)  # 呼叫 _check_list() 檢查是否為空列表，以避免因無法進行分析而出現空白內容
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 10:  # 分析10：返回上層選單
+                case 11:  # 分析11：返回上層選單
                     print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     continue  # 回到「時間選擇平臺」
-                case 11:  # 分析11：結束程式運行
+                case 12:  # 分析12：結束程式運行
                     print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     sys.exit(0)  # 呼叫系統正常結束本程式運行
                 case _:  # 其他錯誤的分析選擇輸入，應該不會走到這裡 #TODO Delete this after check
@@ -669,7 +672,6 @@ period_manual = ("\033[38;5;208m\n「時間選擇平臺」使用說明\n0 顯示
                  "5 選定特定年月（如2025年10月）進行分析\t6 選定特定月日（如10月1日）進行分析\t7 選定特定年日（如2025年所有1日）進行分析\t8 選定特定年月日（如2025年10月1日）進行分析\n"
                  "9 返回「功能選擇平臺」\t10 結束運行並退出程式\n\033[0m")  # 「時間選擇平臺」使用說明
 method_manual = ("\033[38;5;208m\n「分析選擇平臺」使用說明\n0 顯示本則使用說明\t1 使用折線圖分析隨時間變化的總體金額\t2 使用折線圖分析特定類別隨時間變化的金額\n"
-                 "3 使用圓餅圖分析不同類別的金額比例\t4 使用圓餅圖分析不同類別的出現次數比例\n"
-                 "5 使用長條圖顯示不同類別的總金額\t6 使用長條圖顯示不同類別的出現總次數\n"
-                 "7 使用排名顯示總體紀錄中金額最高的項目\t8 使用排名顯示特定類別中金額最高的項目\n"
-                 "9 返回「時間選擇平臺」\t10 結束運行並退出程式\n\033[0m")  # 「分析選擇平臺」使用說明
+                 "3 使用圓餅圖分析不同類別的金額比例\t4 使用圓餅圖分析不同類別的出現次數比例\t5 顯示在給定區間內的總金額\t6 顯示在給定區間中特定類別的總金額\n"
+                 "7 使用長條圖顯示不同類別的總金額\t8 使用長條圖顯示不同類別的出現總次數\t9 使用排名顯示總體紀錄中金額最高的項目\t10 使用排名顯示特定類別中金額最高的項目\n"
+                 "11 返回「時間選擇平臺」\t12 結束運行並退出程式\n\033[0m")  # 「分析選擇平臺」使用說明

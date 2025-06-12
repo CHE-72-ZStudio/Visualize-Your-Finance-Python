@@ -83,21 +83,21 @@ if __name__ == "__main__":
                     Func.outcome_list, Func.income_list = [], []
                     Func.pretreat()
                 case 6:  # 功能6：顯示開源許可（英文原版）
-                    # 嘗試開啟 License_EN.txt 檔案為 gpl 句柄，否則輸出錯誤訊息並取消印出開源許可
+                    # 嘗試開啟 LICENSE 檔案為 gpl 句柄，否則輸出錯誤訊息並取消印出開源許可
                     try:
-                        with open("License_EN.txt", "r", encoding="UTF-8") as gpl:
+                        with open("LICENSE", "r", encoding="UTF-8") as gpl:
                             for line in gpl:
                                 print(line, end="")
                     except FileNotFoundError:
-                        print("\033[38;5;197m開啟 \"License_EN.txt\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
+                        print("\033[38;5;197m開啟 \"LICENSE\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
                 case 7:  # 功能7：顯示開源許可（中文翻譯）
-                    # 嘗試開啟 License_ZH.txt 檔案為 gpl 句柄，否則輸出錯誤訊息並取消印出開源許可
+                    # 嘗試開啟 LICENSE_ZH 檔案為 gpl 句柄，否則輸出錯誤訊息並取消印出開源許可
                     try:
-                        with open("License_ZH.txt", "r", encoding="UTF-8") as gpl:
+                        with open("LICENSE_ZH", "r", encoding="UTF-8") as gpl:
                             for line in gpl:
                                 print(line, end="")
                     except FileNotFoundError:
-                        print("\033[38;5;197m開啟 \"License_ZH.txt\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
+                        print("\033[38;5;197m開啟 \"LICENSE_ZH\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
                 case 8:  # 功能8：顯示作者宣告
                     print("「{}」 Ver{}，著作權所有 (C) 2025-現在 CHE_72 ZStudio".format(program_zh, version))
                     print("{} Ver{} , Copyright (C) 2025-present CHE_72 ZStudio".format(program_en, version))

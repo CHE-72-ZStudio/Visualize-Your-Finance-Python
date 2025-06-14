@@ -22,7 +22,7 @@ def axis_line(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的時間刻度座標（可能為年、月、日、年-月）
     """
-    plt.plot(x_name, y_list)  # 顯示時間標籤與數據資料
+    plt.plot(x_name, y_list, marker=".")  # 顯示時間標籤與數據資料，並將標記樣式設為點，增加可閱讀性
     plt.xticks(x_name)  # 定義繪圖間隔
 
     if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊

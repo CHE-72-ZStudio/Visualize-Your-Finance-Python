@@ -21,15 +21,16 @@ def axis_line(y_list, x_name):
 
     參數：
         * y_list (list)：要繪製的數據資料
-        * x_name (list)：要繪製的時間刻度座標（可能為年、月、日、年-月）
+        * x_name (list)：要繪製的時間刻度座標（可能為 年、月、日、年-月 的組合）
     """
-    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 顯示時間標籤與數據資料，並調整線寬與標記樣式，增加可閱讀性
+    # TODO: 是否要在數據點上方顯示金額或次數值，並且過多的數據點要旋轉、跳躍、閉著眼？
+    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，增加可閱讀性
     plt.xticks(x_name)  # 定義繪圖間隔
 
     if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊
         plt.xticks(rotation=72, ha="right")
 
-    plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便檢視
+    plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便對照 y 軸與檢視
     plt.show()  # 顯示圖表
 
 
@@ -41,8 +42,9 @@ def axis_bar(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的類別刻度
     """
-    plt.bar(x_name, y_list)  # 顯示類別標籤與數據資料
-    plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便檢視
+    # TODO: 是否要在長條上方顯示金額或次數值？
+    plt.bar(x_name, y_list)  # 使用類別標籤與數據資料
+    plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便對照 y 軸與檢視
     plt.show()  # 顯示圖表
 
 
@@ -54,6 +56,14 @@ def axis_pie(y_list, x_name):  # 定義 圓餅圖 函數
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的類別刻度
     """
-    # TODO: 能夠隱藏結果為 0.00% 的數值內容與類別標籤
-    plt.pie(y_list, labels=x_name, autopct="%2.1f%%")  # 顯示類別標籤與數據資料比例
+    # TODO: 能夠隱藏結果為 0.00% 的數值內容與類別標籤（現行解決方案不夠完美，僅能隱藏 0 元的類別標籤，但是仍然無法完全隱藏 0.00% 的數值內容）
+    # 移除金額或次數為 0 的數值內容與類別標籤，避免在顯示圓餅圖時出現重疊，影響數據判讀
+    filtered_list, filtered_name = list(), list()
+
+    for i in range(len(y_list)):
+        if y_list[i] != 0:
+            filtered_list.append(y_list[i])
+            filtered_name.append(x_name[i])
+
+    plt.pie(filtered_list, labels=filtered_name, autopct="%2.1f%%")  # 使用過濾後的類別標籤與數據資料比例
     plt.show()  # 顯示圖表

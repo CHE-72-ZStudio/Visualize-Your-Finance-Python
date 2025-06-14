@@ -19,9 +19,9 @@
 
 
 ## 2. 安裝配置
-1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載對應系統的壓縮包 `VSPF-OS-X.Y.ZZ.zip`
+1. 從 GitHub 上的 [Releases](https://github.com/CHE-72-ZStudio/Visualize-Your-Finance-Python/releases) 頁面下載對應系統的壓縮包 `VYFP-OS-X.Y.ZZ.zip`
 2. 將下載的壓縮包解壓縮後放置於適當的位置，**請不要任意編輯、刪除解壓縮後的檔案**  
-3. 雙擊打開本程式的可執行二進制檔案 `VSPF-X.Y.ZZ-OS`，即可開始使用本程式  
+3. 雙擊打開本程式的可執行二進制檔案 `VYFP-X.Y.ZZ-OS`，即可開始使用本程式  
 
 
 ## 3. 基本使用

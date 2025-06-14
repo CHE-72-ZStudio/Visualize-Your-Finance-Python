@@ -23,12 +23,32 @@ def axis_line(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的時間刻度座標（可能為 年、月、日、年-月 的組合）
     """
-    # TODO: 是否要在數據點上方顯示金額或次數值，並且過多的數據點要旋轉、跳躍、閉著眼？
     plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
-    plt.xticks(x_name)  # 定義繪圖間隔
 
-    if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊
-        plt.xticks(rotation=72, ha="right")
+    # 將 x_name 傳入 plt.xticks() 中，避免 X 軸座標刻度出現小數或其他非預期出現的刻度
+    # 由 Gemini Code Assist 提供旋轉的參數設定，自主修改為三元運算子，將 X 軸座標刻度進行旋轉避免重疊
+    plt.xticks(
+        x_name,
+        rotation = 72 if len(x_name) > 12 else 0
+    )
+
+    # 使用 plt.annotate() 在每個數據點上方顯示數值，並且可以更為細緻地調整偏移位置，較 plt.text() 的功能更為豐富實用
+    # 從 Gemini Code Assist 習得使用方式後進行些微調整
+    for i in range(len(x_name)):
+        plt.annotate(
+            "{}".format(y_list[i]),  # 要顯示的 y 高度數據資料
+            xy=(x_name[i], y_list[i]),  # 設定數據點的 (x, y) 座標做為放置文字的註解點
+            xytext=(0, 3),  # 設定文字相對於註解點的偏移量為 y 方向向上偏移 3（點）
+            textcoords="offset points",  # 設定 xytext 是以 點(pt) 為單位的方式相對於 xy 進行偏移，可以保證圖表放大後依然不會有過大的跑位
+            rotation = 18 if len(x_name) > 12 else 0,  # 使用三元運算子決定旋轉角度，可以有效避免數值重疊，同時更為 Pythonic
+            # ha="center",  # 將水平對其方式設為置中對齊，使文字的正中央對齊數據點的正中央  # TODO 進行大量實際測試後再決定是否啟用本參數
+            va="bottom"  # 將垂直對齊方式設為底部對齊，使文字出現在點的上方
+        )
+    # 顯示效果優於以下方式
+    # for i in range(len(x_name)):
+    #     plt.text(x_name[i], y_list[i], f'{y_list[i]}', ha='center', va='bottom')
+    # 參考來源：https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.annotate.html
+    # 參考來源：https://matplotlib.org/stable/api/text_api.html#matplotlib.text.Text
 
     plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便對照 y 軸與檢視
     plt.show()  # 顯示圖表

@@ -157,7 +157,7 @@ def _sum_order_data(original_list, item_list, position):
     return data_list  # 回傳按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
 
 
-def _filter_data(original_list, year=None, month=None, day=None, category=None):
+def _filter_data(original_list, year=None, month=None, day=None, category=None, check=True):
     """
     內部函數：根據不同的標籤需求過濾原分析數據列表
     1. 過濾後的數據列表不為空後，回傳過濾後的數據列表
@@ -170,6 +170,7 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None):
         * month (int, optional)：要進行篩選的月份，若無則不進行此項篩選
         * day (int, optional)：要進行篩選的日期，若無則不進行此項篩選
         * category (int, optional)：要進行篩選的類別，若無則不進行此項篩選
+        * check (bool, optional)：是否要求進行 _check_list() 空列表檢查，若無則預設進行檢查
 
     回傳：
         * filtered_list (list)：完成篩選後的分析數據列表，可以用於繪圖或其他後續操作
@@ -187,9 +188,10 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None):
     if category is not None:
         filtered_list = [row for row in filtered_list if row[1] == category]  # 僅保留符合類別要求的帳目數據
 
-    # 呼叫 _check_list() 提前檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
+    # 如果在呼叫本函數時要求檢查，則會呼叫 _check_list() 提前檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
     # 若 filtered_list 為空列表，可利用例外傳播將 EmptyError 送到 analyze() 中進行例外處理
-    _check_list(filtered_list)
+    if check:
+        _check_list(filtered_list)
 
     return filtered_list  # 回傳完成篩選後的分析數據列表
 
@@ -495,7 +497,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     for y in range(analyze_year[0], analyze_year[-1] + 1):  # 改為使用 range 的方式，避免漏掉某些年份而導致顯示圖表異常
                         for m in month_list:
                             temp = 0  # 宣告該年月總金額的暫存總和變數
-                            for_list = _filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
+                            for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
                             for row in for_list:  # 對於符合目前遍歷進度的數據
                                 temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
                             line_name.append("{}-{}".format(y, m))  # 將該時間段的名稱加入 X 軸標籤列表的末尾
@@ -630,7 +632,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     for y in analyze_year:
                         for m in month_list:
                             temp = 0  # 宣告該年月總金額的暫存總和變數
-                            for_list = _filter_data(temp_list, year=y, month=m)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表
+                            for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
                             for row in for_list:  # 對於符合目前遍歷進度的數據
                                 temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
                             line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）

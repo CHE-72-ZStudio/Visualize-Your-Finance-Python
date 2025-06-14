@@ -24,7 +24,7 @@ def axis_line(y_list, x_name):
         * x_name (list)：要繪製的時間刻度座標（可能為 年、月、日、年-月 的組合）
     """
     # TODO: 是否要在數據點上方顯示金額或次數值，並且過多的數據點要旋轉、跳躍、閉著眼？
-    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，增加可閱讀性
+    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
     plt.xticks(x_name)  # 定義繪圖間隔
 
     if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊
@@ -43,7 +43,8 @@ def axis_bar(y_list, x_name):
         * x_name (list)：要繪製的類別刻度
     """
     # TODO: 是否要在長條上方顯示金額或次數值？
-    plt.bar(x_name, y_list)  # 使用類別標籤與數據資料
+    color_list = ["m", "r", "y", "g", "c", "b"]  # 設定長條顏色依序為 洋紅、紅、黃、綠、青、藍 6 色列表
+    plt.bar(x_name, y_list, color=color_list)  # 使用類別標籤與數據資料，並增加 6 色循環顯示，提升可閱讀性
     plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便對照 y 軸與檢視
     plt.show()  # 顯示圖表
 

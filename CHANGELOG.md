@@ -1,9 +1,11 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
-## UNRELEASED ~~V1.2.3 (2025-MM-DD)~~
+## UNRELEASED ~~V1.2.4 (2025-MM-DD)~~
 ### 新增功能 Added
 - 在「分析選擇平臺」新增可以顯示不同時間段與不同類別的 支出／收入 金額總和
+### 功能修復 Fixed
+- 修復了「類別選擇平臺」中的選單數字顯示錯誤的問題，現在類別編號可以正常從 1 開始顯示
 ### 已經移除 Removed
 - 移除與 `LICENSE` 內容重複的 `License_EN.txt`，現在輸出英文原版的開源許可時會直接讀取原始的 `LICENSE`
 - 將 `License_ZH.txt` 重新命名為 `LICENSE_ZH`，維持文件命名的一致性

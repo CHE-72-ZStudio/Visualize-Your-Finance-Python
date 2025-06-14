@@ -54,6 +54,7 @@ def axis_pie(y_list, x_name):  # 定義 圓餅圖 函數
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的類別刻度
     """
+    # TODO: 能夠隱藏結果為 0.00% 的數值內容與類別標籤
     plt.pie(y_list, labels=x_name, autopct="%2.1f%%")  # 顯示類別標籤與數據資料比例
     plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
     plt.show()  # 顯示圖表

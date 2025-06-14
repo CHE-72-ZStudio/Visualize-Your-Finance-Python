@@ -42,9 +42,13 @@ def axis_bar(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的類別刻度
     """
-    # TODO: 是否要在長條上方顯示金額或次數值？
     color_list = ["m", "r", "y", "g", "c", "b"]  # 設定長條顏色依序為 洋紅、紅、黃、綠、青、藍 6 色列表
-    plt.bar(x_name, y_list, color=color_list)  # 使用類別標籤與數據資料，並增加 6 色循環顯示，提升可閱讀性
+    # 使用類別標籤與數據資料，增加 6 色循環顯示與 y 高度數值顯示
+    plt.bar_label(plt.bar(x_name, y_list, color=color_list), y_list)
+    # 等效於以下內容
+    # bar_container = plt.bar(x_name, y_list, color=color_list)
+    # plt.bar_label(bar_container, color=color_list)
+
     plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便對照 y 軸與檢視
     plt.show()  # 顯示圖表
 

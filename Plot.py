@@ -13,6 +13,7 @@ if __name__ == "__main__":  # 如果使用者誤啟動本程式
     print("\033[38;5;197m這是 Func.py 呼叫的模組\n請改為運行 Main.py，而非直接運行本程式\n我們即將結束此模組的運行\033[0m")  # 輸出提示訊息提醒使用者正確使用方式
     exit(2)  # 呼叫系統正常結束本程式運行
 
+plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題  #TODO 修改為隨程式分發的鴻蒙黑體，增進跨系統能力
 
 def axis_line(y_list, x_name):
     """
@@ -22,13 +23,12 @@ def axis_line(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的時間刻度座標（可能為年、月、日、年-月）
     """
-    plt.plot(x_name, y_list, marker=".")  # 顯示時間標籤與數據資料，並將標記樣式設為點，增加可閱讀性
+    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 顯示時間標籤與數據資料，並調整線寬與標記樣式，增加可閱讀性
     plt.xticks(x_name)  # 定義繪圖間隔
 
     if len(x_name) > 12:  # 由 Gemini Code Assist 提供建議，將標籤進行旋轉避免重疊
         plt.xticks(rotation=72, ha="right")
 
-    plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
     plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便檢視
     plt.show()  # 顯示圖表
 
@@ -42,7 +42,7 @@ def axis_bar(y_list, x_name):
         * x_name (list)：要繪製的類別刻度
     """
     plt.bar(x_name, y_list)  # 顯示類別標籤與數據資料
-    plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
+    plt.grid(color='gray', ls=":", lw=1, alpha=0.5)  # 增加格線，方便檢視
     plt.show()  # 顯示圖表
 
 
@@ -56,5 +56,4 @@ def axis_pie(y_list, x_name):  # 定義 圓餅圖 函數
     """
     # TODO: 能夠隱藏結果為 0.00% 的數值內容與類別標籤
     plt.pie(y_list, labels=x_name, autopct="%2.1f%%")  # 顯示類別標籤與數據資料比例
-    plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題
     plt.show()  # 顯示圖表

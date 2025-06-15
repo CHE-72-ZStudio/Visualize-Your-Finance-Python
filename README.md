@@ -28,7 +28,7 @@
         * Windows 11+ 已預裝 Windows 終端機，無須另外安裝
 - Apple macOS  
 - Linux
-> 一般的 Windows 使用者可以直接從 Releases 頁面直接下載 `VSPF-Win-X.Y.ZZ.zip`
+> 一般的 Windows 使用者可以直接從 Releases 頁面直接下載 `VYFP-Win-X.Y.ZZ.zip`  
 > 目前僅建議專業開發者直接在 Apple macOS / Linux 編譯運行本程式，我們預計會在未來發行可供一般使用者執行的可執行二進制檔，詳情可見「未來功能」區塊
 
 ## 使用說明 (Instructions)

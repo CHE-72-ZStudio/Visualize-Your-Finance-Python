@@ -3,7 +3,6 @@ Func.py
 此模組提供處理記帳數據的相關功能，包含：
 
 * check_input：檢查使用者輸入是否無效或超出範圍，並回傳輸入數值或拋出對應例外
-* _check_list：檢查列表是否為空，並拋出對應例外
 * print_list：遍歷印出列表，並顯示編號與頓號
 * _sum_data：針對數據列表的特定欄位進行加總後，回傳加總後的列表
 * _filter_data：根據不同的標籤需求過濾原分析數據列表並回傳
@@ -85,22 +84,6 @@ def check_input(prompt, range_min=None, range_max=None):
     return value  # 回傳正確轉換成整數的數值
 
 
-def _check_list(data_list):
-    """
-    內部函數：檢查經過篩選後的數據列表是否為空，如果為空會拋出例外
-    由 Gemini Code Assist 提供建議，符合 DRY 原則
-
-    參數：
-        * data_list (list)：要檢查的列表
-
-    拋出：
-        * EmptyError：如果列表為空時手動拋出的自訂例外
-    """
-    # 若傳入的數據列表為空，會手動拋出自訂的 EmptyError 供 analyze() 接收處理
-    if len(data_list) == 0:
-        raise EmptyError
-
-
 def print_list(content_list, offset=0):  # TODO more Pythonic?
     """
     公開函數：用於遍歷印出列表，並能顯示中文頓號與輸入用箭頭
@@ -160,8 +143,8 @@ def _sum_order_data(original_list, item_list, position):
 def _filter_data(original_list, year=None, month=None, day=None, category=None, check=True):
     """
     內部函數：根據不同的標籤需求過濾原分析數據列表
-    1. 過濾後的數據列表不為空後，回傳過濾後的數據列表
-    2. 過濾後的數據列表為空時，向上傳播來自 _check_list() 的 EmptyError
+    1. 過濾後的數據列表不為空或要求不進行空列表檢查時，則直接回傳過濾後的數據列表
+    2. 過濾後的數據列表為空且要求進行空列表檢查時會拋出自訂例外 EmptyError
     「列表建構 List Comprehension」的邏輯由 Gemini Code Assist 提供建議
 
     參數：
@@ -170,13 +153,13 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None, 
         * month (int, optional)：要進行篩選的月份，若無則不進行此項篩選
         * day (int, optional)：要進行篩選的日期，若無則不進行此項篩選
         * category (int, optional)：要進行篩選的類別，若無則不進行此項篩選
-        * check (bool, optional)：是否要求進行 _check_list() 空列表檢查，若無則預設進行檢查
+        * check (bool, optional)：是否要求進行空列表檢查，若無設定則預設進行檢查
 
     回傳：
         * filtered_list (list)：完成篩選後的分析數據列表，可以用於繪圖或其他後續操作
 
     拋出：
-        * EmptyError：如果要回傳的 filtered_list 列表為空時手動拋出的自訂例外（由 _check_list() 傳播）
+        * EmptyError：如果要求進行空列表檢查，且要回傳的 filtered_list 列表為空時手動拋出的自訂例外
     """
     filtered_list = original_list  # 建立數據列表以進行後續篩選與回傳
     if year is not None:
@@ -188,10 +171,11 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None, 
     if category is not None:
         filtered_list = [row for row in filtered_list if row[1] == category]  # 僅保留符合類別要求的帳目數據
 
-    # 如果在呼叫本函數時要求檢查，則會呼叫 _check_list() 提前檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
-    # 若 filtered_list 為空列表，可利用例外傳播將 EmptyError 送到 analyze() 中進行例外處理
+    # 如果在呼叫本函數時要求檢查，則會檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
+    # 若 filtered_list 為空列表，會手動拋出自訂的 EmptyError 供 analyze() 接收處理
     if check:
-        _check_list(filtered_list)
+        if len(filtered_list == 0):
+            raise EmptyError
 
     return filtered_list  # 回傳完成篩選後的分析數據列表
 

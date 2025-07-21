@@ -1,6 +1,10 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
+## UNRELEASED ~~V1.3.?? (2025-MM-DD)~~
+### 貢獻清單 Contributor
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
+
 ## V1.2.12 (2025-06-15) 修復顯示錯誤與優化圖表樣式
 ### 新增功能 Added
 - 在「分析選擇平臺」新增可以顯示不同時間段與不同類別的 支出／收入 金額總和
@@ -20,6 +24,8 @@
 ### 文檔更新 Edited
 - 更新 `USER.md` 以符合最新新增與調整的程式功能
 - 在 `DEVELOPER.md` 中新增「5. 專案結構」區塊，方便開發者快速上手本程式架構與各個檔案用途
+### 貢獻清單 Contributor
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ## V1.1.20 (2025-06-12) 大幅提升程式的健壯性與修復大量潛在的錯誤
 ### 功能修復 Fixed
@@ -45,6 +51,8 @@
 - 優化折線圖時間標籤的顯示方式，現在會在標籤數量較多時旋轉標籤，增加可視度
 - 優化選單列表印出與讀取用戶輸入的方式，現在整體內容更為清晰易懂
 - 透過程式中部份區域的重構與語句順序的調整，使程式符合 DRY 原則、提升可讀性與更為 Pythonic
+### 貢獻清單 Contributor
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ## V1.1.5 (2025-06-10) 具備新增帳目的功能
 ### 新增功能 Added

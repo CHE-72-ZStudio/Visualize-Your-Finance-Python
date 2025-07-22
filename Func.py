@@ -265,7 +265,8 @@ def pretreat():
     公開函數：用於 Main.py 呼叫的預處理函數，會將讀取到的數據儲存至全域列表以供後續分析數據使用
     預處理內容包含：開啟與讀取 Record.csv、儲存到 支出／收入 數據列表、提示錯誤訊息、轉換數據型態和製造 支出／收入 年分列表
     """
-    # 嘗試開啟 Record.csv 檔案為 record 句柄，否則輸出錯誤訊息並直接結束程式（因為缺少該檔案，程式後續無法執行）
+    # 嘗試開啟 Record.csv 檔案為 record 句柄，否則嘗試建立空白的 Record.csv 檔案
+    # 如果讀取或寫入時遇到其他異常，則輸出錯誤訊息並直接結束程式（因為缺少該檔案，程式後續無法執行）
     try:
         # 由 Gemini Code Assist 提供建議，調整開啟檔案的邏輯，避免發生其他異常時未能正確關閉文件
         with open("Record.csv", "r", newline="", encoding="UTF-8") as record:
@@ -288,17 +289,22 @@ def pretreat():
                     income_read.append(r)  # 將其附加至收入數據列表，方便後續存取
                 else:  # 否則，此檔案內容應有誤
                     error_rows.append(row_num)  # 將錯誤列號存放到出錯橫列號列表
-    # TODO: 修改為 FileNotFouneError 時自動建立 Record.csv 檔案並提示使用者利用程式功能新增帳目數據至 Record.csv 中
-    # TODO: 只有 Exception 這種完全無法處理的問題的時候才使用以下這種 sys.exit(2) 的方法
     except FileNotFoundError:
-        print("\033[38;5;197m開啟 \"Record.csv\" 時出現錯誤，請檢查資料夾內是否包含此檔案")
-        print("請確保 \"Record.csv\" 與本程式元件放在同一資料夾下，以利程式正確讀取記帳檔案")
-        print("\n程序運行出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")
-        sys.exit(2)
+        # 如果程式找不到 Record.csv 檔案，則在輸出提示訊息後嘗試在資料夾中建立空白的 Record.csv 檔案
+        # 如果無法正確建立檔案時，則輸出錯誤訊息並直接結束程式（因為缺少該檔案，程式後續無法執行）
+        print("\033[38;5;197m程式未在資料夾內找到 \"Record.csv\" 檔案\033[0m")
+        try:
+            with open("Record.csv", "w", newline="", encoding="UTF-8"):  # 因為檔案不存在，所以使用 "w" 模式自動建立新檔案
+                pass  # 使用 pass 跳過寫入步驟，以便維持檔案空白
+            print("\033[38;5;47m程式已在資料夾內建立新的 \"Record.csv\" 檔案，您可以透過「功能選擇平臺」中的「新增支出／收入紀錄」功能來儲存帳目資料")  # 輸出引導使用者的提示訊息
+            return  # 回到「功能選擇平臺」
+        except Exception:  # 如果無法成功建立 Record.csv 檔案
+            print("\n程序在建立 \"Record.csv\" 檔案時出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")  # 輸出提示訊息與通知聲音
+            sys.exit(5)  # 呼叫系統結束本程式運行，原因為"Input/ouput error"
     except Exception:
         print("\033[38;5;197m開啟 \"Record.csv\" 時出現不明原因的錯誤")
-        print("\n程序運行出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")
-        sys.exit(2)
+        print("\n程序運行出現無法繼續與修正的錯誤，正在結束程序\033[0m\a\n\n")  # 輸出提示訊息與通知聲音
+        sys.exit(5)  # 呼叫系統結束本程式運行，原因為"Input/ouput error"
 
     # 如果出錯橫列號列表不為空，則輸出包含所有出錯橫列編號的錯誤訊息
     if error_rows:

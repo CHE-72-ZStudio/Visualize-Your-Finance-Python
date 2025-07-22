@@ -21,8 +21,8 @@ from Plot import *
 
 period_list = ["顯示使用說明", "分析所有紀錄", "特定年分的紀錄", "特定月份的紀錄", "特定日期的紀錄",
                "特定年月的紀錄", "特定月日的紀錄", "特定年日的紀錄", "特定年月日的紀錄", "返回上層選單", "結束程式運行"]  # 「時間選擇平臺」選單列表
-method_list = ["顯示使用說明", "總體金額折線走勢圖", "各類金額折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖", "總體金額總和", "各類金額總和",
-               "總體流動金額長條圖", "總體流動次數長條圖", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
+method_list = ["顯示使用說明", "總體金額折線走勢圖", "各類金額折線走勢圖", "總體次數折線走勢圖", "各類次數折線走勢圖", "總體金額圓餅佔比圖", "總體次數圓餅佔比圖",
+               "總體流動金額長條圖", "總體流動次數長條圖", "總體金額／次數表格", "總體細項排名表", "各類細項排名表", "返回上層選單", "結束程式運行"]  # 「分析選擇平臺」選單列表
 
 outcome_cat = ["交通出行", "日常飲食", "購物花費", "帳單繳費", "服務消費", "休閒娛樂", "投資理財", "旅行出遊",
                "教育學習", "居家生活", "票證加值", "社交人情", "商務往來", "醫療保健", "借錢給人", "帳戶轉帳",
@@ -532,7 +532,9 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             print_list(method_list)  # 呼叫列表印出函式，印出「分析選擇平臺」的選單列表
             method =  check_input("--> \033[0m", 0, len(method_list) - 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至分析變數，依序傳入 詢問內容、最小數值、最大數值
 
-            match method:  # TODO 確認 3,4 是否與 7,8 合併成 subplot
+            match method:
+                # TODO 確認 1,2 是否與 3,4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸
+                # TODO 確認 3,4 是否與 7,8 合併成 subplot
                 case 0:  # 分析0：顯示使用說明
                     print(method_manual)  # 印出「分析選擇平臺」的使用說明
                 case 1:  # 分析1：總體金額折線走勢圖
@@ -547,12 +549,14 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                         continue  # 回到「時間選擇平臺」
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                # TODO: 新增 case 3 總體次數折線走勢圖
-                # TODO: 新增 casd 4 各類次數折線走勢圖
-                case 3:  # 分析3：總體金額圓餅佔比圖  # TODO: 改成 case 5
+                case 3:  # 分析3：總體次數折線走勢圖
+                    pass  # TODO: To Be implemented...
+                case 4:  # 分析4：各類次數折線走勢圖
+                    pass  # TODO: To Be implemented...
+                case 5:  # 分析5：總體金額圓餅佔比圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
-                case 4:  # 分析4：總體次數圓餅佔比圖  # TODO: 改成 case 6
+                case 6:  # 分析6：總體次數圓餅佔比圖
                     pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
                     # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表
                     for c in analyze_num:
@@ -562,14 +566,6 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
-                case 5:  # 分析5：總體金額總和  # TODO: 改成 金額/次數總表，包含 總體金額總和/次數 與 各類金額總和/次數    # TODO: 改成 case 9
-                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間的總流動金額
-                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-                case 6:  # 分析6：各類金額總和  # TODO:DELETE
-                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                    temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間與類別的總流動金額
-                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
                 case 7:  # 分析7：總體流動金額長條圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
@@ -583,22 +579,30 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 9:  # 分析9：總體細項排名表  # TODO: 改成 case 10
+                case 9:  # 分析9：總體金額／次數表格  # TODO: 正在開發，包含 總體金額總和/次數 與 各類金額總和/次數
+                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間的總流動金額
+                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                case 9.1:  # 分析6：各類金額總和  # TODO: DELETE this after case 9 is implemented
+                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                    temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間與類別的總流動金額
+                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                case 10:  # 分析10：總體細項排名表
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 10:  # 分析10：各類細項排名表  # TODO: 改成 case 11
+                case 11:  # 分析11：各類細項排名表
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 11:  # 分析11：返回上層選單  # TODO: 改成 case 12
+                case 12:  # 分析12：返回上層選單
                     print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     continue  # 回到「時間選擇平臺」
-                case 12:  # 分析12：結束程式運行  # TODO: 改成 case 13
+                case 13:  # 分析13：結束程式運行
                     print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     sys.exit(0)  # 呼叫系統正常結束本程式運行
-                case _:  # 其他錯誤的分析選擇輸入，應該不會走到這裡 #TODO Delete this after check
+                case _:  # 其他錯誤的分析選擇輸入，應該不會走到這裡 # TODO Delete this after check
                     print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
 
@@ -650,12 +654,13 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「時間選擇平臺」
 
-
+# 「時間選擇平臺」使用說明
 period_manual = ("\033[38;5;208m\n「時間選擇平臺」使用說明\n0 顯示本則使用說明\t1 分析記帳檔案中的所有紀錄\n"
                  "2 選定特定年度（如2025年），分析當年度所有紀錄\t3 選定特定月份（如10月），分析該月份的所有紀錄\t4 選定特定日期（如1日），分析該日期的所有紀錄\n"
                  "5 選定特定年月（如2025年10月）進行分析\t6 選定特定月日（如10月1日）進行分析\t7 選定特定年日（如2025年所有1日）進行分析\t8 選定特定年月日（如2025年10月1日）進行分析\n"
-                 "9 返回「功能選擇平臺」\t10 結束運行並退出程式\n\033[0m")  # 「時間選擇平臺」使用說明
+                 "9 返回「功能選擇平臺」\t10 結束運行並退出程式\n\033[0m")
+# 「分析選擇平臺」使用說明
 method_manual = ("\033[38;5;208m\n「分析選擇平臺」使用說明\n0 顯示本則使用說明\t1 使用折線圖分析隨時間變化的總體金額\t2 使用折線圖分析特定類別隨時間變化的金額\n"
-                 "3 使用圓餅圖分析不同類別的金額比例\t4 使用圓餅圖分析不同類別的出現次數比例\t5 顯示在給定區間內的總金額\t6 顯示在給定區間中特定類別的總金額\n"
-                 "7 使用長條圖顯示不同類別的總金額\t8 使用長條圖顯示不同類別的出現總次數\t9 使用排名顯示總體紀錄中金額最高的項目\t10 使用排名顯示特定類別中金額最高的項目\n"
-                 "11 返回「時間選擇平臺」\t12 結束運行並退出程式\n\033[0m")  # 「分析選擇平臺」使用說明
+                 "3 使用折線圖分析隨時間變化的總體次數\t4 使用折線圖分析特定類別隨時間變化的次數\t5 使用圓餅圖分析各類別的金額比例\t6 使用圓餅圖分析各類別的出現次數比例\n"
+                 "7 使用長條圖顯示各類別的總金額\t8 使用長條圖顯示各類別的出現總次數\t9 使用表格顯示總體與各類別的總金額與總次數\n"
+                 "10 使用排名顯示總體紀錄中金額最高的項目\t11 使用排名顯示特定類別中金額最高的項目\t11 返回「時間選擇平臺」\t12 結束運行並退出程式\n\033[0m")

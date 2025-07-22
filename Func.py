@@ -192,6 +192,8 @@ def _rank_data(original_list, analyze_cat, num):
     """
     rank_list = sorted(original_list, key=lambda row: row[5], reverse=True)  # 依據原分析數據列表中，金額的大小順序進行排名並放入排名列表
     rank_list = rank_list[:num]  # 從排名列表中取出金額最大的前 num 名後放入排名列表
+    #TODO: 如果 len(rank_list)<num 則在標題中輸出 len(rank_list) 而非 num
+    #TODO: 如果 len(rank_list)==0 則在標題中輸出無資料的訊息並跳過榜單列印過程
     print("\033[38;5;45m\n金額前 {} 名的紀錄如下：".format(num))  # 印出排名榜單的標題
     num = 1  # 作為稍後列印榜單時的名次
     for row in rank_list:
@@ -545,10 +547,12 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                         continue  # 回到「時間選擇平臺」
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                case 3:  # 分析3：總體金額圓餅佔比圖
+                # TODO: 新增 case 3 總體次數折線走勢圖
+                # TODO: 新增 casd 4 各類次數折線走勢圖
+                case 3:  # 分析3：總體金額圓餅佔比圖  # TODO: 改成 case 5
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
-                case 4:  # 分析4：總體次數圓餅佔比圖
+                case 4:  # 分析4：總體次數圓餅佔比圖  # TODO: 改成 case 6
                     pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
                     # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表
                     for c in analyze_num:
@@ -558,10 +562,10 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
-                case 5:  # 分析5：總體金額總和
+                case 5:  # 分析5：總體金額總和  # TODO: 改成 金額/次數總表，包含 總體金額總和/次數 與 各類金額總和/次數    # TODO: 改成 case 9
                     total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間的總流動金額
                     print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-                case 6:  # 分析6：各類金額總和
+                case 6:  # 分析6：各類金額總和  # TODO:DELETE
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                     total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間與類別的總流動金額
@@ -579,19 +583,19 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 9:  # 分析9：總體細項排名表
+                case 9:  # 分析9：總體細項排名表  # TODO: 改成 case 10
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 10:  # 分析10：各類細項排名表
+                case 10:  # 分析10：各類細項排名表  # TODO: 改成 case 11
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
                     _rank_data(temp_list, analyze_cat, rank)  # 呼叫 _rank_data() 函數進行排名顯示，依序傳入暫存數據列表、分析類別列表、排名顯示數量
-                case 11:  # 分析11：返回上層選單
+                case 11:  # 分析11：返回上層選單  # TODO: 改成 case 12
                     print("\033[38;5;43m正在返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     continue  # 回到「時間選擇平臺」
-                case 12:  # 分析12：結束程式運行
+                case 12:  # 分析12：結束程式運行  # TODO: 改成 case 13
                     print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     sys.exit(0)  # 呼叫系統正常結束本程式運行
                 case _:  # 其他錯誤的分析選擇輸入，應該不會走到這裡 #TODO Delete this after check

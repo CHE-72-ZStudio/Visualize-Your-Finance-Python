@@ -174,7 +174,7 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None, 
     # 如果在呼叫本函數時要求檢查，則會檢查篩選完的數據列表是否為空，以避免因無法進行分析而出現空白內容
     # 若 filtered_list 為空列表，會手動拋出自訂的 EmptyError 供 analyze() 接收處理
     if check:
-        if len(filtered_list == 0):
+        if len(filtered_list) == 0:
             raise EmptyError
 
     return filtered_list  # 回傳完成篩選後的分析數據列表
@@ -195,7 +195,6 @@ def _rank_data(original_list, analyze_cat, num):
 
     # 如果實際的排名列表比使用者要求的數量少，則顯示實際排名列表的數量
     # 因為 original_list 已經在呼叫 _rank_data() 前呼叫了 _filter_data()，如果 original_list 為空，就會拋出 EmptyError，故這裡不再做 len(rank_list) 的檢查
-    # TODO: Test this New Feature
     print("\033[38;5;45m\n金額前 {} 名的紀錄如下：".format(num if len(rank_list)==num else len(rank_list)))  # 印出排名榜單的標題
     num = 1  # 作為稍後列印榜單時的名次
     for row in rank_list:

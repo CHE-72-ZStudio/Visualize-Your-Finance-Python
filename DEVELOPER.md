@@ -14,7 +14,7 @@
 ## 1. 環境需求 Environment Requirements
 - **作業系統**：
     - Microsoft Windows 10+
-    - Apple macOS
+    - Apple macOS 10.9+
     - Linux
 - **依賴套件**：
     - Python 3.10+（支援 match...case... 語法）  

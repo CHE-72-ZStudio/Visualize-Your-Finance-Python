@@ -192,9 +192,11 @@ def _rank_data(original_list, analyze_cat, num):
     """
     rank_list = sorted(original_list, key=lambda row: row[5], reverse=True)  # 依據原分析數據列表中，金額的大小順序進行排名並放入排名列表
     rank_list = rank_list[:num]  # 從排名列表中取出金額最大的前 num 名後放入排名列表
-    #TODO: 如果 len(rank_list)<num 則在標題中輸出 len(rank_list) 而非 num
-    #TODO: 如果 len(rank_list)==0 則在標題中輸出無資料的訊息並跳過榜單列印過程
-    print("\033[38;5;45m\n金額前 {} 名的紀錄如下：".format(num))  # 印出排名榜單的標題
+
+    # 如果實際的排名列表比使用者要求的數量少，則顯示實際排名列表的數量
+    # 因為 original_list 已經在呼叫 _rank_data() 前呼叫了 _filter_data()，如果 original_list 為空，就會拋出 EmptyError，故這裡不再做 len(rank_list) 的檢查
+    # TODO: Test this New Feature
+    print("\033[38;5;45m\n金額前 {} 名的紀錄如下：".format(num if len(rank_list)==num else len(rank_list)))  # 印出排名榜單的標題
     num = 1  # 作為稍後列印榜單時的名次
     for row in rank_list:
         output = "{}. {}-{}-{}，{}，NT${}，{}".format(num, row[2], row[3], row[4], analyze_cat[row[1] - 1], row[5], row[6])

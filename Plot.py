@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":  # 如果使用者誤啟動本程式
     print("\033[38;5;197m這是 Func.py 呼叫的模組\n請改為運行 Main.py，而非直接運行本程式\n我們即將結束此模組的運行\033[0m")  # 輸出提示訊息提醒使用者正確使用方式
-    exit(2)  # 呼叫系統正常結束本程式運行
+    exit(1)  # 呼叫系統結束本程式運行，原因為"Operation not permitted"
 
 plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題  #TODO 修改為隨程式分發的鴻蒙黑體，增進跨系統能力
 
@@ -25,12 +25,20 @@ def axis_line(y_list, x_name):
     """
     plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
 
+    # TODO: 使用 plt.figure() 修改 facecolor="silver"？
+
     # 將 x_name 傳入 plt.xticks() 中，避免 X 軸座標刻度出現小數或其他非預期出現的刻度
     # 由 Gemini Code Assist 提供旋轉的參數設定，自主修改為三元運算子，將 X 軸座標刻度進行旋轉避免重疊
     plt.xticks(
         x_name,
         rotation = 72 if len(x_name) > 12 else 0
     )
+    # TODO: 改為以下這樣是否會較好？
+    # plt.xticks(
+    #     range(len(x_name)),
+    #     rotation=72 if len(x_name) > 12 else 0,
+    #     labels=x_name
+    # )
 
     # 使用 plt.annotate() 在每個數據點上方顯示數值，並且可以更為細緻地調整偏移位置，較 plt.text() 的功能更為豐富實用
     # 從 Gemini Code Assist 習得使用方式後進行些微調整
@@ -63,6 +71,8 @@ def axis_bar(y_list, x_name):
         * x_name (list)：要繪製的類別刻度
     """
     color_list = ["m", "r", "y", "g", "c", "b"]  # 設定長條顏色依序為 洋紅、紅、黃、綠、青、藍 6 色列表
+
+    # TODO: 使用 plt.figure() 修改 facecolor="silver"？
 
     # 使用類別標籤與數據資料，增加 6 色循環顯示與 y 高度數值顯示
     plt.bar_label(plt.bar(x_name, y_list, color=color_list))

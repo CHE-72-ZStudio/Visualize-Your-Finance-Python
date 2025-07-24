@@ -23,9 +23,8 @@ def axis_line(y_list, x_name):
         * y_list (list)：要繪製的數據資料
         * x_name (list)：要繪製的時間刻度座標（可能為 年、月、日、年-月 的組合）
     """
+    plt.figure(facecolor="whitesmoke")  # 設定圖表區的背景色為白煙色，增加圖表可視度
     plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
-
-    # TODO: 使用 plt.figure() 修改 facecolor="silver"？
 
     # 將 x_name 傳入 plt.xticks() 中，避免 X 軸座標刻度出現小數或其他非預期出現的刻度
     # 由 Gemini Code Assist 提供旋轉的參數設定，自主修改為三元運算子，將 X 軸座標刻度進行旋轉避免重疊
@@ -72,7 +71,7 @@ def axis_bar(y_list, x_name):
     """
     color_list = ["m", "r", "y", "g", "c", "b"]  # 設定長條顏色依序為 洋紅、紅、黃、綠、青、藍 6 色列表
 
-    # TODO: 使用 plt.figure() 修改 facecolor="silver"？
+    plt.figure(facecolor="whitesmoke")  # 設定圖表區的背景色為白煙色，增加圖表可視度
 
     # 使用類別標籤與數據資料，增加 6 色循環顯示與 y 高度數值顯示
     plt.bar_label(plt.bar(x_name, y_list, color=color_list))

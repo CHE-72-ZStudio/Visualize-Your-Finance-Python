@@ -551,8 +551,10 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             method =  check_input("--> \033[0m", 0, len(method_list) - 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至分析變數，依序傳入 詢問內容、最小數值、最大數值
 
             match method:
-                # TODO 確認 1,2 是否與 3,4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
-                # TODO 確認 5,6 是否與 7,8 合併成 subplot
+                # TODO 確認 1 是否與 2 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
+                # TODO 確認 3 是否與 4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
+                # TODO 確認 5 是否與 6 合併成左右並列的 subplot
+                # TODO 確認 7 是否與 8 合併在同一張圖表區中
                 case 0:  # 分析0：顯示使用說明
                     print(method_manual)  # 印出「分析選擇平臺」的使用說明
                 case 1:  # 分析1：總體金額折線走勢圖
@@ -578,13 +580,17 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
                 case 6:  # 分析6：總體次數圓餅佔比圖
                     pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
-                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表  # TODO: 是否可以改用新版的 _sum_order_data()？
+                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表
                     for c in analyze_num:
                         temp = 0  # 宣告該類別總次數的暫存總和變數
                         for data in temp_list:
                             if data[1] == c:  # 對於符合目前遍歷類別的數據
                                 temp += 1
                         pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
+                    # TODO: 是否可以改用新版的 _sum_order_data()？
+                    # for c in analyze_num:
+                    #     cat_list = _filter_data(temp_list, category=c, check=False)
+                    #     pie_list.append(sum_all_data(cat_list, False))  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
                 case 7:  # 分析7：總體流動金額長條圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
@@ -598,34 +604,29 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                             if c == data[1]:  # 對於符合目前遍歷類別的數據
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
+                    # TODO: 是否可以改用新版的 _sum_order_data()？
+                    # for c in analyze_num:
+                    #     cat_list = _filter_data(temp_list, category=c, check=False)
+                    #     bar_list.append(sum_all_data(cat_list, False))  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 9:  # 分析9：總體金額／次數表格
-                    # TODO: 顯示金額的表格設定為 10 位整數，顯示次數的表格設定為 7 位整數（是否可以根據最大值進行動態調整？）
-                    # TODO: 註解待完成
-                    print("\033[38;5;45m您在這段期間的 {} 金額／次數總表如下".format(analyze_flow))
-                    print("編號 項目 金額（次數）")
-                    print("00 總{} NT${:,}（{:,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
+                    # TODO: 表格中的整數顯示設定：編號 2 位，金額 10 位，次數 7 位（是否可以根據最大值進行動態調整？）
+                    print("\033[38;5;45m您在這段期間的 {} 金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
+                    print("編號 類別 金額（次數）")  # 印出 金額／次數 總表的欄位
 
-                    for cat in analyze_num:
-                        cat_list = _filter_data(temp_list, category=cat, check=False)  # 以所需類別變數過濾暫存數據列表
+                    # 以分隔符方式輸出計算結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
+                    print("00 所有{} NT${:,}（{:,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
+
+                    for c in analyze_num:  # 遍歷所有類別
+                        cat_list = _filter_data(temp_list, category=c, check=False)  # 以所需類別變數過濾暫存數據列表，存入遍歷類別的專用暫存列表，並且不要做空列表檢查
+
+                        # 檢查篩選完的數據列表是否為空：若 cat_list 為空列表，則不在總表中印出
                         if len(cat_list):
-                            print("{} {} NT${:,}（{:,}次）".format(cat, analyze_cat[cat - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
+                            # 以分隔符方式輸出計算結果，使用到類別的 編號、名稱、金額、次數 參數（呼叫 sum_all_data() 計算給定期間與類別的 總金額／總次數）
+                            print("{} {} NT${:,}（{:,}次）".format(c, analyze_cat[c - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
+                        # TODO: 詢問 Google Gemini，使用 if 的方案較佳，還是使用 try...except...else... 捕捉來自 _filter_data() 的例外較佳
 
-                    print("\033[0m")
-                case 99:  # 分析9：總體金額／次數表格（舊版本實現，最小可行）  # TODO: DELETE this after new case 9 is fully implemented
-                    total = sum_all_data(temp_list)  # 呼叫 sum_data() 函數計算給定期間的總流動金額
-                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                    temp_list1 = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    total = sum_all_data(temp_list1)  # 呼叫 sum_data() 函數計算給定期間與類別的總流動金額
-                    print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-
-                    total = sum_all_data(temp_list, False)  # 呼叫 sum_data() 函數計算給定期間的總出現次數
-                    print("您在這段期間的 {} 次數總和為 {:,} 次".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                    temp_list2 = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    total = sum_all_data(temp_list2, False)  # 呼叫 sum_data() 函數計算給定期間與類別的總出現次數
-                    print("您在這段期間的 {} 次數總和為 {:,} 次".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                    print("\033[0m")  # 清除顏色設定格式並同時換行
                 case 10:  # 分析10：總體細項排名表
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值

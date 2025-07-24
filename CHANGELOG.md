@@ -3,10 +3,10 @@
 
 ## UNRELEASED ~~V1.3.7 (2025-MM-DD)~~ ~~新增分析方式與現有功能再進化~~
 ### 新增功能 Added
-- 在 `Func.py` 中新增「總體次數折線走勢圖」、「各類次數折線走勢圖」的分析方式（尚未完成）
+- 在 `Func.py` 中新增「總體次數折線走勢圖」、「各類次數折線走勢圖」、「總體金額／次數表格」的分析方式，使分析更為快速全面（尚未完成）
 - 現在如果程式在資料夾下找不到 `Record.csv` 檔案，則會自動創建一個空白檔案，並提示用戶使用程式功能進行帳目數據的寫入，避免因缺少檔案而無法運行
 ### 功能更改 Changed
-- 將 `Func.py` 中原本的「總體金額總和」與「各類金額總和」合併並升級為「總體金額／次數表格」功能，使分析更為快速全面（尚未完成）
+- 合併並升級後的「總體金額／次數表格」已經取代了 `Func.py` 中原本的「總體金額總和」與「各類金額總和」分析功能（尚未完成）
 - 由於增加與合併分析選擇平臺中的方式，調整部分分析選擇平臺的功能編號
 ### 提升進步 Improved
 - 更新並優化 `Func.py` 中對於「分析選擇平臺」的使用說明，使其更為精準
@@ -109,4 +109,4 @@
 - [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
 
 ### 帳目分析可視化程式（Python），著作權所有 (C) 2025-現在 CHE_72 ZStudio
-#### Visualize Your Finance (Python) , Copytight (C) 2025-present CHE_72 ZStudio.
+#### Visualize Your Finance (Python) , Copyright (C) 2025-present CHE_72 ZStudio.

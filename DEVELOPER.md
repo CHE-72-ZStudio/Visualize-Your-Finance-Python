@@ -104,4 +104,4 @@
 
 
 ### 帳目分析可視化程式（Python），著作權所有 (C) 2025-現在 CHE_72 ZStudio
-#### Visualize Your Finance (Python), Copytight (C) 2025-present CHE_72 ZStudio.
+#### Visualize Your Finance (Python), Copyright (C) 2025-present CHE_72 ZStudio.

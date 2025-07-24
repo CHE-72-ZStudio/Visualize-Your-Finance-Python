@@ -599,10 +599,20 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 99:  # 分析9：總體金額／次數表格  # TODO: 正在開發，包含 總體金額總和/次數 與 各類金額總和/次數
-                    #TODO 顯示金額的表格設定為 10 位整數，顯示次數的表格設定為 7 位整數（是否可以根據最大值進行動態調整？）
-                    pass
-                case 9:  # 分析9：總體金額／次數表格（舊版本實現，最小可行）  # TODO: DELETE this after new case 9 is implemented
+                case 9:  # 分析9：總體金額／次數表格
+                    # TODO: 顯示金額的表格設定為 10 位整數，顯示次數的表格設定為 7 位整數（是否可以根據最大值進行動態調整？）
+                    # TODO: 註解待完成
+                    print("\033[38;5;45m您在這段期間的 {} 金額／次數總表如下".format(analyze_flow))
+                    print("編號 項目 金額（次數）")
+                    print("00 總{} NT${:,}（{:,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
+
+                    for cat in analyze_num:
+                        cat_list = _filter_data(temp_list, category=cat, check=False)  # 以所需類別變數過濾暫存數據列表
+                        if len(cat_list):
+                            print("{} {} NT${:,}（{:,}次）".format(cat, analyze_cat[cat - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
+
+                    print("\033[0m")
+                case 99:  # 分析9：總體金額／次數表格（舊版本實現，最小可行）  # TODO: DELETE this after new case 9 is fully implemented
                     total = sum_all_data(temp_list)  # 呼叫 sum_data() 函數計算給定期間的總流動金額
                     print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別

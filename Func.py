@@ -588,12 +588,12 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     bar_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入長條圖數值列表
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入長條圖數值列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 9:  # 分析9：總體金額／次數表格
-                    # TODO: 表格中的整數顯示設定：編號 2 位，金額 10 位，次數 7 位（是否可以根據最大值進行動態調整？）
-                    print("\033[38;5;45m您在這段期間的 {} 金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
-                    print("編號 類別 金額（次數）")  # 印出 金額／次數 總表的欄位
+                    # TODO: 表格中的整數顯示設定是否可以根據最大值進行動態調整？（挑選最大值，轉換成科學記號，讀取位數後再決定顯示方式？）
+                    print("\033[38;5;45m您在這段期間的「{}」金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
+                    print("編號    類別         金額        （次數）")  # 印出 金額／次數 總表的欄位
 
                     # 以分隔符方式輸出計算結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
-                    print("00 所有{} NT${:,}（{:,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
+                    print("  0   所有{}  NT${:11,} （{:5,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
 
                     for c in analyze_num:  # 遍歷所有類別  # TODO: 研究使用 _sum_order_data() 的可行性
                         cat_list = _filter_data(temp_list, category=c, check=False)  # 以所需類別變數過濾暫存數據列表，存入遍歷類別的專用暫存列表，並且不要做空列表檢查
@@ -601,7 +601,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                         # 檢查篩選完的數據列表是否為空：若 cat_list 為空列表，則不在總表中印出
                         if len(cat_list):
                             # 以分隔符方式輸出計算結果，使用到類別的 編號、名稱、金額、次數 參數（呼叫 sum_all_data() 計算給定期間與類別的 總金額／總次數）
-                            print("{} {} NT${:,}（{:,}次）".format(c, analyze_cat[c - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
+                            print(" {:2}   {}  NT${:11,} （{:5,}次）".format(c, analyze_cat[c - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
                         # TODO: 詢問 Google Gemini，使用 if 的方案較佳，還是使用 try...except...else... 捕捉來自 _filter_data() 的例外較佳
 
                     print("\033[0m")  # 清除顏色設定格式並同時換行

@@ -15,16 +15,17 @@ if __name__ == "__main__":  # 如果使用者誤啟動本程式
 
 plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]  # 修改為中文字體 微軟正黑體，避免預設字體的中文字顯示問題  #TODO 修改為隨程式分發的鴻蒙黑體，增進跨系統能力
 
-def axis_line(y_list, x_name):
+def axis_line(y1_list, y2_list, x_name):
     """
     用於繪製隨時間變化的折線圖函數
 
     參數：
-        * y_list (list)：要繪製的數據資料
+        * y1_list (list)：要繪製的數據資料 1，對應到左側座標軸
+        * y2_list (list)：要繪製的數據資料 2，對應到右側座標軸（仍在測試階段，目前尚未啟用）Axes.twinx()
         * x_name (list)：要繪製的時間刻度座標（可能為 年、月、日、年-月 的組合）
     """
     plt.figure(facecolor="whitesmoke")  # 設定圖表區的背景色為白煙色，增加圖表可視度
-    plt.plot(x_name, y_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
+    plt.plot(x_name, y1_list, marker=".", lw=1.5)  # 使用時間標籤與數據資料，並調整線寬與標記樣式，提升可閱讀性
 
     # 將 x_name 傳入 plt.xticks() 中，避免 X 軸座標刻度出現小數或其他非預期出現的刻度
     # 由 Gemini Code Assist 提供旋轉的參數設定，自主修改為三元運算子，將 X 軸座標刻度進行旋轉避免重疊
@@ -43,8 +44,8 @@ def axis_line(y_list, x_name):
     # 從 Gemini Code Assist 習得使用方式後進行些微調整
     for i in range(len(x_name)):
         plt.annotate(
-            "{}".format(y_list[i]),  # 要顯示的 y 高度數據資料
-            xy=(x_name[i], y_list[i]),  # 設定數據點的 (x, y) 座標做為放置文字的註解點
+            "{}".format(y1_list[i]),  # 要顯示的 y 高度數據資料
+            xy=(x_name[i], y1_list[i]),  # 設定數據點的 (x, y) 座標做為放置文字的註解點
             xytext=(0, 3),  # 設定文字相對於註解點的偏移量為 y 方向向上偏移 3（點）
             textcoords="offset points",  # 設定 xytext 是以 點(pt) 為單位的方式相對於 xy 進行偏移，可以保證圖表放大後依然不會有過大的跑位
             rotation = 18 if len(x_name) > 12 else 0,  # 使用三元運算子決定旋轉角度，可以有效避免數值重疊，同時更為 Pythonic

@@ -53,7 +53,7 @@ class EmptyError(TypeError):
 
 if __name__ == "__main__":  # 如果使用者誤啟動本程式
     print("\033[38;5;197m這是 Main.py 呼叫的模組\n請改為運行 Main.py，而非直接運行本程式\n我們即將結束此模組的運行\033[0m")  # 輸出提示訊息提醒使用者正確使用方式
-    exit(2)  # 呼叫系統正常結束本程式運行
+    exit(1)  # 呼叫系統結束本程式運行，原因為"Operation not permitted"
 
 
 def check_input(prompt, range_min=None, range_max=None):
@@ -99,33 +99,35 @@ def print_list(content_list, offset=0):  # TODO more Pythonic?
             print("\033[38;5;43m{}: {}".format(i + offset, content_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
 
 
-def sum_data(original_list):
+def sum_all_data(original_list, amount=True):
     """
-    公開函數：將接收到的分析數據列表進行所有金額的加總後回傳總金額
+    公開函數：將接收到的分析數據列表進行所有 金額／次數 的加總後回傳 總金額／總次數
 
     參數：
-        * original_list (list)：要讀取後進行所有金額加總的原始分析數據列表
+        * original_list (list)：要讀取後進行所有 金額／次數 加總的原始分析數據列表
+        * amount (bool)：預設為 True，表示進行帳目金額的加總；若設定為 False，表示進行出現次數的加總
 
     回傳：
-        * total (int)：按照原始項目順序加總後的列表，可作為後續顯示資產變化時使用
+        * total (int)：按照原始項目順序加總後的列表，可作為後續顯示資產變化或繪製圖表時使用
     """
     total = int()  # 宣告空的回傳整數
     for row in original_list:  # 對於數據列表中的每一筆帳目
-        total += row[5]  # 總和變數加上此帳目的金額
-    return total  # 回傳總和變數，可作為後續顯示資產變化時使用
+        total += (row[5] if amount else 1)  # 總和變數加上此帳目的 金額／次數
+    return total  # 回傳總和變數，可作為後續顯示資產變化或繪製圖表時使用
 
 
-def _sum_order_data(original_list, item_list, position):
+def _sum_order_data(original_list, item_list, position, amount=True):
     """
-    內部函數：針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的加總後，回傳加總後符合原始項目順序的列表
+    內部函數：針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的 金額／次數 加總後，回傳加總後符合原始項目順序的列表
 
     參數：
         * original_list (list)：要讀取後進行加總的原始分析數據列表
         * item_list (list)：要進行篩選後加總的項目列表，即圖表中的 X 軸
         * position (int)：該項目對應的原始分析數據欄位位置
+        * amount (bool)：預設為 True，表示進行帳目金額的加總；若設定為 False，表示進行出現次數的加總
 
     回傳：
-        * data_list (list)：按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
+        * data_list (list)：按照原始項目順序進行 金額／次數 加總後的列表，可作為後續圖表繪製時使用
     """
     data_list = list()  # 宣告空的回傳列表
 
@@ -134,7 +136,7 @@ def _sum_order_data(original_list, item_list, position):
         total = 0  # 宣告該項目總金額的暫存總和變數
         for row in original_list:  # 對於數據列表中的每一筆帳目
             if row[position] == item:  # 如果數據列表的欄位值與現在計算項目相同
-                total += row[5]  # 該項目的暫存總和變數加上此帳目的金額
+                total += (row[5] if amount else 1)  # 該項目的暫存總和變數加上此帳目的金額／次數
         data_list.append(total)  # 將該項目的總金額加入回傳列表末尾，作為該 X 位置對應的 Y 位置
 
     return data_list  # 回傳按照原始項目順序加總後的列表，可作為後續圖表繪製時使用
@@ -468,19 +470,22 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     print(period_manual)  # 印出「時間選擇平臺」的對應說明文件
                     continue  # 回到「時間選擇平臺」
                 case 1:  # 時間1：分析所有紀錄
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 2:  # 時間2：特定年分的紀錄
                     year = check_input("您想要分析哪一年的數據資料？")  # 呼叫 check_input() 函數檢查使用者輸入後存放至 年 變數，傳入詢問內容
                     temp_list = _filter_data(temp_list, year=year)  # 以所需 年 變數過濾暫存數據列表
 
-                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, month_list, 3, False)  # 以月為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
                 case 3:  # 時間3：特定月份的紀錄
                     month = check_input("您想要分析每年的哪一月的數據資料？", 1, 12)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 月 變數，依序傳入 詢問內容、最小數值、最大數值
                     temp_list = _filter_data(analyze_list, month=month)  # 以所需 月 變數過濾暫存數據列表
 
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 4:  # 時間4：特定日期的紀錄
                     day = check_input("您想要分析每年每月哪一天的數據資料？", 1, 31)  # 呼叫 check_input() 函數檢查使用者輸入後存放至 日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -489,19 +494,22 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
                     for y in range(analyze_year[0], analyze_year[-1] + 1):  # 改為使用 range 的方式，避免漏掉某些年份而導致顯示圖表異常
                         for m in month_list:
-                            temp = 0  # 宣告該年月總金額的暫存總和變數
+                            temp = [0, 0]  # 宣告該年月總金額與總次數的暫存總和列表
                             for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
                             for row in for_list:  # 對於符合目前遍歷進度的數據
-                                temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
+                                temp[1] += row[5]  # 該時間段的暫存金額總和加上此筆帳目的金額
+                                temp[2] += 1  # 該時間段的暫存次數總和加上代表此筆帳目的 1 次
                             line_name.append("{}-{}".format(y, m))  # 將該時間段的名稱加入 X 軸標籤列表的末尾
-                            line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾
+                            amount_list.append(temp[1])  # 將該時間段的暫存金額總和加入 Y 軸金額列表的末尾
+                            times_list.append(temp[2])  # 將該時間段的暫存次數總和加入 Y 軸金額列表的末尾
                 case 5:  # 時間5：特定年月的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、月 變數，依序傳入 詢問內容、最小數值、最大數值
                     year = check_input("您想要分析哪一年的數據資料？")
                     month = check_input("您想要分析 {} 年哪一月的數據資料？".format(year), 1, 12)
                     temp_list = _filter_data(temp_list, year=year, month=month)  # 以所需 年、月 變數過濾暫存數據列表
 
-                    line_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, day_list, 4, False)  # 以日為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = day_list, day_list  # X 軸間距列表與 X 軸標籤列表定義為分析日期列表
                 case 6:  # 時間6：特定月日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 月、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -509,7 +517,8 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     day = check_input("您想要分析每年 {} 月哪一天的數據資料？".format(month), 1, 31)
                     temp_list = _filter_data(analyze_list, month=month, day=day)  # 以所需 月、日 變數過濾暫存數據列表
 
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = analyze_year, analyze_year  # X 軸間距列表與 X 軸標籤列表定義為分析年份列表
                 case 7:  # 時間7：特定年日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -517,7 +526,8 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     day = check_input("您想要分析 {} 年哪一天的數據資料？".format(year), 1, 31)
                     temp_list = _filter_data(analyze_list, year=year, day=day)  # 以所需 年、日 變數過濾暫存數據列表
 
-                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
+                    amount_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    times_list = _sum_order_data(temp_list, month_list, 3, False)  # 以月為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
                     line_axis, line_name = month_list, month_list  # X 軸間距列表與 X 軸標籤列表定義為分析月份列表
                 case 8:  # 時間8：特定年月日的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、月、日 變數，依序傳入 詢問內容、最小數值、最大數值
@@ -540,8 +550,8 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             method =  check_input("--> \033[0m", 0, len(method_list) - 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至分析變數，依序傳入 詢問內容、最小數值、最大數值
 
             match method:
-                # TODO 確認 1,2 是否與 3,4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸
-                # TODO 確認 3,4 是否與 7,8 合併成 subplot
+                # TODO 確認 1,2 是否與 3,4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
+                # TODO 確認 5,6 是否與 7,8 合併成 subplot
                 case 0:  # 分析0：顯示使用說明
                     print(method_manual)  # 印出「分析選擇平臺」的使用說明
                 case 1:  # 分析1：總體金額折線走勢圖
@@ -549,23 +559,25 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                         print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                         continue  # 回到「時間選擇平臺」
                     else:
-                        axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
-                case 2:  # 分析2：各類金額折線走勢圖
+                        axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
+                case 2 | 4:  # 分析2：各類金額折線走勢圖／分析4：各類次數折線走勢圖
                     if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
                         print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                         continue  # 回到「時間選擇平臺」
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
                     temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                 case 3:  # 分析3：總體次數折線走勢圖
-                    pass  # TODO: To Be implemented...
-                case 4:  # 分析4：各類次數折線走勢圖
-                    pass  # TODO: To Be implemented...
+                    if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
+                        print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
+                        continue  # 回到「時間選擇平臺」
+                    else:
+                        axis_line(times_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
                 case 5:  # 分析5：總體金額圓餅佔比圖
                     temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
                 case 6:  # 分析6：總體次數圓餅佔比圖
                     pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
-                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表
+                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表  # TODO: 是否可以改用新版的 _sum_order_data()？
                     for c in analyze_num:
                         temp = 0  # 宣告該類別總次數的暫存總和變數
                         for data in temp_list:
@@ -586,14 +598,23 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                                 temp += 1
                         bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
-                case 9:  # 分析9：總體金額／次數表格  # TODO: 正在開發，包含 總體金額總和/次數 與 各類金額總和/次數
-                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間的總流動金額
+                case 99:  # 分析9：總體金額／次數表格  # TODO: 正在開發，包含 總體金額總和/次數 與 各類金額總和/次數
+                    #TODO 顯示金額的表格設定為 10 位整數，顯示次數的表格設定為 7 位整數（是否可以根據最大值進行動態調整？）
+                    pass
+                case 9:  # 分析9：總體金額／次數表格（舊版本實現，最小可行）  # TODO: DELETE this after new case 9 is implemented
+                    total = sum_all_data(temp_list)  # 呼叫 sum_data() 函數計算給定期間的總流動金額
                     print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
-                case 9.1:  # 分析6：各類金額總和  # TODO: DELETE this after case 9 is implemented
                     cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                    temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
-                    total = sum_data(temp_list)  #呼叫 sum_data() 函數計算給定期間與類別的總流動金額
+                    temp_list1 = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                    total = sum_all_data(temp_list1)  # 呼叫 sum_data() 函數計算給定期間與類別的總流動金額
                     print("您在這段期間的 {} 金額總和為 NT${:,}".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+
+                    total = sum_all_data(temp_list, False)  # 呼叫 sum_data() 函數計算給定期間的總出現次數
+                    print("您在這段期間的 {} 次數總和為 {:,} 次".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
+                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                    temp_list2 = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                    total = sum_all_data(temp_list2, False)  # 呼叫 sum_data() 函數計算給定期間與類別的總出現次數
+                    print("您在這段期間的 {} 次數總和為 {:,} 次".format(analyze_flow, total))  # 以分隔符方式輸出計算結果，使用到 分析金流名稱 參數
                 case 10:  # 分析10：總體細項排名表
                     #_check_list(temp_list)  # 這裡不再做暫存數據列表是否為空的檢查，因為如果暫存數據列表為空就會在前面出現 EmptyError 例外
                     rank = check_input("您想比較前幾筆資料？", 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入，依序傳入 詢問內容、最小數值
@@ -617,31 +638,58 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             # TODO: here can be more pythonic by asking Google Gemini Code Assist
             match (period, method):
                 case (1, 2):
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
                 case (2, 2):
-                    line_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    amount_list = _sum_order_data(temp_list, month_list, 3)  # 以月為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
                 case (3, 2):
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
                 case (4, 2):
-                    line_list = list()  # 重新定義 Y 軸數值為空列表
-                    # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸數值列表，同時創造依照順序排列的 X 軸標籤列表
+                    amount_list = list()  # 重新定義 Y 軸數值為空列表
+                    # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸金額列表，同時創造依照順序排列的 X 軸標籤列表
                     for y in analyze_year:
                         for m in month_list:
                             temp = 0  # 宣告該年月總金額的暫存總和變數
                             for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
                             for row in for_list:  # 對於符合目前遍歷進度的數據
-                                temp += row[5]  # 該時間段的暫存總和變數加上此筆帳目的金額
-                            line_list.append(temp)  # 將該時間段的暫存總和加入 Y 軸數值列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                                temp += row[5]  # 該時間段的暫存金額總和變數加上此筆帳目的金額
+                            amount_list.append(temp)  # 將該時間段的暫存金額總和加入 Y 軸金額列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
                 case (5, 2):
-                    line_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    amount_list = _sum_order_data(temp_list, day_list, 4)  # 以日為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
                 case (6, 2):
-                    line_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的加總後，存入後續圖表使用的 Y 軸數值列表
-                    axis_line(line_list, line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸數值、X 軸間距、X 軸標籤列表
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2)  # 以年為單位先進行暫存數據列表的金額加總後，存入後續圖表使用的 Y 軸金額列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸金額、X 軸間距、X 軸標籤列表
+                case (1, 4):
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
+                case (2, 4):
+                    amount_list = _sum_order_data(temp_list, month_list, 3, False)  # 以月為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
+                case (3, 4):
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
+                case (4, 4):
+                    amount_list = list()  # 重新定義 Y 軸數值為空列表
+                    # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸次數列表，同時創造依照順序排列的 X 軸標籤列表
+                    for y in analyze_year:
+                        for m in month_list:
+                            temp = 0  # 宣告該年月總次數的暫存總和變數
+                            for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
+                            for row in for_list:  # 對於符合目前遍歷進度的數據
+                                temp += 1  # 該時間段的暫存次數總和加上代表此筆帳目的 1 次
+                            amount_list.append(temp)  # 將該時間段的暫存次數總和加入 Y 軸次數列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
+                            #TODO: 是否可以直接改為 amount_list.append(len(for_list)) 以節省一個 for 迴圈與 temp 變數？
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
+                case (5, 4):
+                    amount_list = _sum_order_data(temp_list, day_list, 4, False)  # 以日為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
+                case (6, 4):
+                    amount_list = _sum_order_data(temp_list, analyze_year, 2, False)  # 以年為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表
+                    axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
                 # 由於其他輸入錯誤的情形已在前面進行檢測與排除，此處不再放置其他判斷條件
                 # case (_, _):
 

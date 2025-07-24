@@ -576,39 +576,17 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     else:
                         axis_line(times_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
                 case 5:  # 分析5：總體金額圓餅佔比圖
-                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
+                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的金額加總後，存入圓餅圖數值列表
                     axis_pie(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（作為標籤）
                 case 6:  # 分析6：總體次數圓餅佔比圖
-                    pie_list = list()  # 預先定義後續圓餅圖使用的數值列表為空列表
-                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入圓餅圖數值列表
-                    for c in analyze_num:
-                        temp = 0  # 宣告該類別總次數的暫存總和變數
-                        for data in temp_list:
-                            if data[1] == c:  # 對於符合目前遍歷類別的數據
-                                temp += 1
-                        pie_list.append(temp)  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
-                    # TODO: 是否可以改用新版的 _sum_order_data()？
-                    # for c in analyze_num:
-                    #     cat_list = _filter_data(temp_list, category=c, check=False)
-                    #     pie_list.append(sum_all_data(cat_list, False))  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
+                    pie_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入圓餅圖數值列表
                     axis_pie(pie_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_pie() 函數繪製圓餅圖，依序傳入圓餅圖數值列表、分析類別列表（標籤）
                 case 7:  # 分析7：總體流動金額長條圖
-                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的加總後，存回暫存數據列表作為後續圖表使用
-                    axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
+                    temp_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的金額加總後，存入長條圖數值列表
+                    axis_bar(temp_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入長條圖數值列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 8:  # 分析8：總體流動次數長條圖
-                    bar_list = list()  # 預先定義後續長條圖使用的數值列表為空列表
-                    # 遍歷所有類別，按照類別順序計算該類別的出現次數後存入長條圖數值列表
-                    for c in analyze_num:
-                        temp = 0  # 宣告該類別總次數的暫存總和變數
-                        for data in temp_list:
-                            if c == data[1]:  # 對於符合目前遍歷類別的數據
-                                temp += 1
-                        bar_list.append(temp)  # 將該類別的暫存總和加入長條圖數值列表的末尾
-                    # TODO: 是否可以改用新版的 _sum_order_data()？
-                    # for c in analyze_num:
-                    #     cat_list = _filter_data(temp_list, category=c, check=False)
-                    #     bar_list.append(sum_all_data(cat_list, False))  # 將該類別的暫存總和加入圓餅圖數值列表的末尾
-                    axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入暫存數據列表、分析編號列表（間距）、分析類別列表（標籤）
+                    bar_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入長條圖數值列表
+                    axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入長條圖數值列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 9:  # 分析9：總體金額／次數表格
                     # TODO: 表格中的整數顯示設定：編號 2 位，金額 10 位，次數 7 位（是否可以根據最大值進行動態調整？）
                     print("\033[38;5;45m您在這段期間的 {} 金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
@@ -617,7 +595,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 以分隔符方式輸出計算結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
                     print("00 所有{} NT${:,}（{:,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
 
-                    for c in analyze_num:  # 遍歷所有類別
+                    for c in analyze_num:  # 遍歷所有類別  # TODO: 研究使用 _sum_order_data() 的可行性
                         cat_list = _filter_data(temp_list, category=c, check=False)  # 以所需類別變數過濾暫存數據列表，存入遍歷類別的專用暫存列表，並且不要做空列表檢查
 
                         # 檢查篩選完的數據列表是否為空：若 cat_list 為空列表，則不在總表中印出

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # 定義 中／英 程式名稱、程式版本號，如果日後有需要更新時，更改此處即可避免缺失遺漏
     program_zh = "帳目分析可視化程式（Python）"
     program_en = "Visualize Your Finance (Python)"
-    version = "1.2.12"
+    version = "1.3.7"
 
     print("歡迎您使用「{}」Ver{}，本程式由 CHE_72 ZStudio 製作".format(program_zh, version))  # 輸出中文程式名稱、程式版本號、工作室名稱
     print("\033[38;5;208m本程式可用來協助您分析 \"Record.csv\" 中的記帳數據，並使用圖形化的分析顯示結果。\033[0m")  # 輸出中文程式目的
@@ -53,8 +53,8 @@ if __name__ == "__main__":
                     Func.analyze("收入", Func.income_list, Func.income_cat, Func.income_year, range(1, len(Func.income_cat) + 1))
                 case 3:  # 功能3：顯示目前資產
                     # 呼叫 Func.py 中的 sum_data() 函數進行數據列表的金額加總，計算 支出／收入 金額的總和
-                    outcome_total = Func.sum_data(Func.outcome_list)
-                    income_total = Func.sum_data(Func.income_list)
+                    outcome_total = Func.sum_all_data(Func.outcome_list)
+                    income_total = Func.sum_all_data(Func.income_list)
                     final_total = income_total - outcome_total
 
                     # 以分隔符方式輸出計算結果
@@ -108,4 +108,4 @@ if __name__ == "__main__":
                     print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後重新輸入，現正返回「功能選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
 else:  # 如果使用者誤將本程式作為模組引用
     print("\033[38;5;197m本程式為「帳目分析可視化程式」的主入口\n請直接運行 Main.py，而非透過其他模組引入本程式\033[0m\a\n")  # 輸出提示訊息提醒使用者正確使用方式
-    sys.exit(1)  # 呼叫系統正常結束本程式運行
+    sys.exit(1)  # 呼叫系統結束本程式運行，原因為"Operation not permitted"

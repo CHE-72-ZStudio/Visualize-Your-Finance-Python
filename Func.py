@@ -148,7 +148,7 @@ def _filter_data(original_list, year=None, month=None, day=None, category=None, 
     """
     內部函數：根據不同的標籤需求過濾原分析數據列表
     1. 過濾後的數據列表不為空或要求不進行空列表檢查時，則直接回傳過濾後的數據列表
-    2. 過濾後的數據列表為空且要求進行空列表檢查時會拋出自訂例外 EmptyError
+    2. 過濾後的數據列表為空且要求進行空列表檢查時會視情形拋出自訂例外 EmptyError
     「列表建構 List Comprehension」的邏輯由 Gemini Code Assist 提供建議
 
     參數：
@@ -199,10 +199,10 @@ def _rank_data(original_list, analyze_cat, num):
 
     # 如果實際的排名列表比使用者要求的數量少，則顯示實際排名列表的數量
     # 因為 original_list 已經在呼叫 _rank_data() 前呼叫了 _filter_data()，如果 original_list 為空，就會拋出 EmptyError，故這裡不再做 len(rank_list) 的檢查
-    print("\033[38;5;45m\n金額前 {} 名的紀錄如下：".format(num if len(rank_list)==num else len(rank_list)))  # 印出排名榜單的標題
+    print("\033[38;5;45m\n金額前 {:,} 名的紀錄如下：".format(num if len(rank_list)==num else len(rank_list)))  # 印出排名榜單的標題
     num = 1  # 作為稍後列印榜單時的名次
     for row in rank_list:
-        output = "{}. {}-{}-{}，{}，NT${}，{}".format(num, row[2], row[3], row[4], analyze_cat[row[1] - 1], row[5], row[6])
+        output = "{:,}. {}-{}-{}，{}，NT${:,}，{}".format(num, row[2], row[3], row[4], analyze_cat[row[1] - 1], row[5], row[6])
         print(output)  # 印出名次、時間、類別、金額、詳細描述
         num += 1  # 名次遞增，前進到下一名
     print("\033[0m")  # 還原一般輸出格式，移除顏色效果，同時可以進行換行的分隔作用
@@ -226,7 +226,7 @@ def write_record(flow, reocrd_cat):
         sys.exit(22)  # 呼叫系統結束本程式運行，原因為"Invalid argument"
 
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
-        print("\033[38;5;43m這裡是「數據輸入平臺」，您正在輸入{}帳目\033[0m".format(flow_name))  # 輸出「數據輸入平臺」的提示訊息
+        print("\033[38;5;43m這裡是「數據輸入平臺」，您正在輸入「{}」帳目\033[0m".format(flow_name))  # 輸出「數據輸入平臺」的提示訊息
         cat = _cat_question(reocrd_cat)  # 呼叫「類別選擇平臺」取得所需類別
 
         try:  # 讀取使用者輸入至 年、月、日、金額 變數，並嘗試轉換成整數後檢查輸入是否符合正常範圍
@@ -235,28 +235,26 @@ def write_record(flow, reocrd_cat):
             month = check_input("您想要輸入 {} 年哪一月的 {} 資料？".format(year, reocrd_cat[cat - 1]), 1, 12)
             day = check_input("您想要輸入 {} 年 {} 月哪一天的 {} 資料？".format(year, month, reocrd_cat[cat - 1]), 1, 31)
             amount = check_input("您想要輸入在 {} 年 {} 月 {} 日 {} 的金額數目是多少 NT$？".format(year, month, day, reocrd_cat[cat - 1]), 1)
+        except RangeError:  # 如果使用者輸入超出正常範圍的內容
             print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
             continue  # 回到「數據輸入平臺」
-        except RangeError:  # 如果使用者輸入超出正常範圍的內容
-            print("\033[38;5;197m您的輸入內容超出合理範圍，請檢查後輸入正確內容，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
-            continue  # 回到「時間選擇平臺」
         except ValueError:  # 如果使用者輸入無法轉換成整數的內容
-            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
-            continue  # 回到「時間選擇平臺」
+            print("\033[38;5;197m您的輸入內容出現非整數的錯誤，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            continue  # 回到「數據輸入平臺」
         except Exception:  # 例外處理，捕捉其他未預期的錯誤
-            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
-            continue  # 回到「時間選擇平臺」
+            print("\033[38;5;197m您的輸入內容出現其他錯誤，請檢查後輸入正確內容，現正返回「數據輸入平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
+            continue  # 回到「數據輸入平臺」
 
-        item = input("您想要輸入此筆 {} NT${} 的 項目名稱／註記 為何？".format(reocrd_cat[cat - 1], amount))
+        item = input("您想要輸入此筆 {} NT${:,} 的 項目名稱／註記 為何？".format(reocrd_cat[cat - 1], amount))
         row = "{},{},{},{},{},{},{}".format(flow,cat,year,month,day,amount,item)
-        print("\033[38;5;47m正在寫入 {}-{}-{} 的 {} {} NT${} 數據\033[0m".format(year, month, day, flow_name, reocrd_cat[cat - 1], amount))
+        print("\033[38;5;47m正在寫入 {}-{}-{} 的 {} {} NT${:,} 數據\033[0m".format(year, month, day, flow_name, reocrd_cat[cat - 1], amount))
 
         # 使用附加模式與 UTF-8 開啟 Record.csv 檔案為 record 句柄，避免覆蓋原有數據與日後無法讀取
         with open("Record.csv", "a+", encoding="UTF-8") as record:
             record.write("{}\n".format(row))
 
-        next = input("\033[38;5;47m程式已完成該筆資料的儲存，您是否還要輸入其他筆金額數據？（輸入 Y 以繼續輸入，其他文字則會返回「功能選擇平臺」）")
-        match next:
+        others = input("\033[38;5;47m程式已完成該筆資料的儲存，您是否還要輸入其他筆金額數據？（輸入 Y 以繼續輸入，其他文字則會返回「功能選擇平臺」）")
+        match others:
             case "y" | "Y":
                 print("\033[38;5;43m正在返回「數據輸入平臺」以繼續輸入下一筆數據\033[0m\a\n")  # 輸出提示訊息與通知聲音
                 continue  # 回到「數據輸入平臺」
@@ -380,11 +378,11 @@ def pretreat():
             income_list.append(income)
     # 如果出錯帳目數量不為 0，則輸出包含出錯帳目數量的錯誤訊息
     if type_error:
-        print("\033[38;5;208m有 {} 筆數據缺少 類別、年份、月份、日期、金額 欄位，無法正確讀取與轉換".format(type_error))
+        print("\033[38;5;208m有 {:,} 筆數據缺少 類別、年份、月份、日期、金額 欄位，無法正確讀取與轉換".format(type_error))
     if int_error:
-        print("\033[38;5;208m有 {} 筆數據的 類別、年份、月份、日期、金額 欄位，無法正確轉換成整數型態".format(int_error))
+        print("\033[38;5;208m有 {:,} 筆數據的 類別、年份、月份、日期、金額 欄位，無法正確轉換成整數型態".format(int_error))
     if range_error:
-        print("\033[38;5;208m有 {} 筆數據的 類別、月份、日期、金額 欄位，數值內容超出合理範圍".format(range_error))
+        print("\033[38;5;208m有 {:,} 筆數據的 類別、月份、日期、金額 欄位，數值內容超出合理範圍".format(range_error))
     if type_error + int_error + range_error:
         print("程式將忽略這些異常的資料，請檢查您的檔案是否完全符合格式要求\033[0m")
 
@@ -590,7 +588,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     bar_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入長條圖數值列表
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入長條圖數值列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 9:  # 分析9：總體金額／次數表格
-                    # TODO: V1.4.X 確認表格中的整數顯示設定是否可以根據最大值進行動態調整？（挑選最大值，轉換成科學記號，讀取位數後再決定顯示方式？）
+                    # TODO: V1.4.X 確認表格中的整數顯示設定是否可以根據 總金額／總次數 進行動態調整？（將 總金額／總次數 轉換成科學記號，讀取位數後再決定顯示方式？）
                     print("\033[38;5;45m您在這段期間的「{}」金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
                     print("編號    類別         金額        （次數）")  # 印出 金額／次數 總表的欄位
 

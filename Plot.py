@@ -102,5 +102,5 @@ def axis_pie(y_list, x_name):  # 定義 圓餅圖 函數
             filtered_list.append(y_list[i])
             filtered_name.append(x_name[i])
 
-    plt.pie(filtered_list, labels=filtered_name, autopct="%2.1f%%")  # 使用過濾後的類別標籤與數據資料比例
+    plt.pie(filtered_list, labels=filtered_name, autopct="%2.1f%%", pctdistance=0.72, labeldistance=1.25)  # 使用過濾後的類別標籤與數據資料比例
     plt.show()  # 顯示圖表

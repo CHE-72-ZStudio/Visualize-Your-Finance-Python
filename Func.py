@@ -120,6 +120,7 @@ def sum_all_data(original_list, amount=True):
 def _sum_order_data(original_list, item_list, position, amount=True):
     """
     內部函數：針對分析數據列表的特定欄位，按照項目列表的順序進行同一項目的 金額／次數 加總後，回傳加總後符合原始項目順序的列表
+    可以完全代替 _filter_data() -> sum_all_data() 的邏輯，更為 Pythonic
 
     參數：
         * original_list (list)：要讀取後進行加總的原始分析數據列表
@@ -460,7 +461,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
 
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         temp_list = analyze_list  # 定義暫存數據列表，避免更改原始分析數據列表
-        line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤
+        line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤  # TODO: to be updated...
 
         try:  # 由 Gemini Code Assist 提供建議，在主迴圈中捕捉例外與處理錯誤後，讓迴圈繼續迭代，符合 DRY 原則與提高可讀性
             print("\n這裡是「時間選擇平臺」，請選擇您想分析的時間段")  # 輸出「時間選擇平臺」的提示訊息
@@ -551,10 +552,10 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             method =  check_input("--> \033[0m", 0, len(method_list) - 1)  # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至分析變數，依序傳入 詢問內容、最小數值、最大數值
 
             match method:
-                # TODO 確認 1 是否與 2 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
-                # TODO 確認 3 是否與 4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
-                # TODO 確認 5 是否與 6 合併成左右並列的 subplot
-                # TODO 確認 7 是否與 8 合併在同一張圖表區中
+                # TODO V1.4.X 確認 1 是否與 2 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
+                # TODO V1.4.X 確認 3 是否與 4 合併成 同一張折線圖，分別使用左 y 軸與右 y 軸 Axes.twinx()
+                # TODO V1.4.X 確認 5 是否與 6 合併成左右並列的 subplot
+                # TODO V1.4.X 確認 7 是否與 8 合併在同一張圖表區中
                 case 0:  # 分析0：顯示使用說明
                     print(method_manual)  # 印出「分析選擇平臺」的使用說明
                 case 1:  # 分析1：總體金額折線走勢圖
@@ -567,8 +568,9 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
                         print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
                         continue  # 回到「時間選擇平臺」
-                    cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
-                    temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
+                    else:
+                        cat = _cat_question(analyze_cat)  # 呼叫「類別選擇平臺」取得所需類別
+                        temp_list = _filter_data(temp_list, category=cat)  # 以所需類別變數過濾暫存數據列表
                 case 3:  # 分析3：總體次數折線走勢圖
                     if period == 8:  # 無法分析特定年月日的紀錄（只有一天，沒有時間變化與趨勢可言）
                         print("\033[38;5;208m特定年月日的紀錄（只有一天）無法進行折線圖分析，現正返回「時間選擇平臺」\a\n")  # 輸出提示訊息
@@ -588,21 +590,20 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     bar_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入長條圖數值列表
                     axis_bar(bar_list, analyze_cat)  # 呼叫 Plot.py 中的 axis_bar() 函數繪製長條圖，依序傳入長條圖數值列表、分析編號列表（間距）、分析類別列表（標籤）
                 case 9:  # 分析9：總體金額／次數表格
-                    # TODO: 表格中的整數顯示設定是否可以根據最大值進行動態調整？（挑選最大值，轉換成科學記號，讀取位數後再決定顯示方式？）
+                    # TODO: V1.4.X 確認表格中的整數顯示設定是否可以根據最大值進行動態調整？（挑選最大值，轉換成科學記號，讀取位數後再決定顯示方式？）
                     print("\033[38;5;45m您在這段期間的「{}」金額／次數 總表如下".format(analyze_flow))  # 印出 金額／次數 總表的標題
                     print("編號    類別         金額        （次數）")  # 印出 金額／次數 總表的欄位
 
-                    # 以分隔符方式輸出計算結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
+                    # 以分隔符方式輸出總計結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
                     print("  0   所有{}  NT${:11,} （{:5,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
 
-                    for c in analyze_num:  # 遍歷所有類別  # TODO: 研究使用 _sum_order_data() 的可行性
-                        cat_list = _filter_data(temp_list, category=c, check=False)  # 以所需類別變數過濾暫存數據列表，存入遍歷類別的專用暫存列表，並且不要做空列表檢查
+                    amount_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的金額加總後，存入金額數值列表
+                    times_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入次數數值列表
 
-                        # 檢查篩選完的數據列表是否為空：若 cat_list 為空列表，則不在總表中印出
-                        if len(cat_list):
-                            # 以分隔符方式輸出計算結果，使用到類別的 編號、名稱、金額、次數 參數（呼叫 sum_all_data() 計算給定期間與類別的 總金額／總次數）
-                            print(" {:2}   {}  NT${:11,} （{:5,}次）".format(c, analyze_cat[c - 1], sum_all_data(cat_list), sum_all_data(cat_list, False)))
-                        # TODO: 詢問 Google Gemini，使用 if 的方案較佳，還是使用 try...except...else... 捕捉來自 _filter_data() 的例外較佳
+                    # 遍歷所有類別，如果該類別的出現次數不為 0，則以分隔符方式輸出計算結果，使用到類別的 編號、名稱、金額、次數 參數；否則就不在總表中印出
+                    for c in analyze_num:
+                        if times_list[c - 1]:
+                            print(" {:2}   {}  NT${:11,} （{:5,}次）".format(c, analyze_cat[c - 1], amount_list[c - 1], times_list[c - 1]))
 
                     print("\033[0m")  # 清除顏色設定格式並同時換行
                 case 10:  # 分析10：總體細項排名表
@@ -700,12 +701,14 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
             continue  # 回到「時間選擇平臺」
 
 # 「時間選擇平臺」使用說明
-period_manual = ("\033[38;5;208m\n「時間選擇平臺」使用說明\n0 顯示本則使用說明\t1 分析記帳檔案中的所有紀錄\n"
+period_manual = ("\033[38;5;208m\n「時間選擇平臺」使用說明\n"
+                 "0 顯示本則使用說明\t1 分析記帳檔案中的所有紀錄\n"
                  "2 選定特定年度（如2025年），分析當年度所有紀錄\t3 選定特定月份（如10月），分析該月份的所有紀錄\t4 選定特定日期（如1日），分析該日期的所有紀錄\n"
                  "5 選定特定年月（如2025年10月）進行分析\t6 選定特定月日（如10月1日）進行分析\t7 選定特定年日（如2025年所有1日）進行分析\t8 選定特定年月日（如2025年10月1日）進行分析\n"
                  "9 返回「功能選擇平臺」\t10 結束運行並退出程式\n\033[0m")
 # 「分析選擇平臺」使用說明
-method_manual = ("\033[38;5;208m\n「分析選擇平臺」使用說明\n0 顯示本則使用說明\t1 使用折線圖分析隨時間變化的總體金額\t2 使用折線圖分析特定類別隨時間變化的金額\n"
+method_manual = ("\033[38;5;208m\n「分析選擇平臺」使用說明\n"
+                 "0 顯示本則使用說明\t1 使用折線圖分析隨時間變化的總體金額\t2 使用折線圖分析特定類別隨時間變化的金額\n"
                  "3 使用折線圖分析隨時間變化的總體次數\t4 使用折線圖分析特定類別隨時間變化的次數\t5 使用圓餅圖分析各類別的金額比例\t6 使用圓餅圖分析各類別的出現次數比例\n"
                  "7 使用長條圖顯示各類別的總金額\t8 使用長條圖顯示各類別的出現總次數\t9 使用表格顯示總體與各類別的總金額與總次數\n"
-                 "10 使用排名顯示總體紀錄中金額最高的項目\t11 使用排名顯示特定類別中金額最高的項目\t11 返回「時間選擇平臺」\t12 結束運行並退出程式\n\033[0m")
+                 "10 使用排名顯示總體紀錄中金額最高的前 N 項\t11 使用排名顯示特定類別中金額最高的前 N 項\t12 返回「時間選擇平臺」\t13 結束運行並退出程式\n\033[0m")

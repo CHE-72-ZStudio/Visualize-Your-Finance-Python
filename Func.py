@@ -4,7 +4,7 @@ Func.py
 
 * check_input：檢查使用者輸入是否無效或超出範圍，並回傳輸入數值或拋出對應例外
 * print_list：遍歷印出列表，並顯示編號與頓號
-* sum_all_data：針對整份數據列表進行加總後，回傳加總後的數值
+* sum_all_amount：針對整份數據列表進行金額加總後，回傳總金額的數值
 * _sum_order_data：針對數據列表的特定欄位排序後再進行加總，並回傳加總後的列表
 * _filter_data：根據不同的標籤需求過濾原分析數據列表並回傳
 * _rank_data：根據不同的數據資料與需求筆數，對數據資料的金額進行排名並印出
@@ -100,22 +100,20 @@ def print_list(content_list, offset=0):  # TODO more Pythonic?
             print("\033[38;5;43m{}: {}".format(i + offset, content_list[i]), end='、')  # 印出編號與列表文字，以頓號分隔元素
 
 
-def sum_all_data(original_list, amount=True):
+def sum_all_amount(original_list):
     """
-    公開函數：將接收到的分析數據列表進行所有 金額／次數 的加總後回傳 總金額／總次數
+    公開函數：將接收到的分析數據列表進行所有金額的加總後回傳總金額
 
     參數：
-        * original_list (list)：要讀取後進行所有 金額／次數 加總的原始分析數據列表
-        * amount (bool)：預設為 True，表示進行帳目金額的加總；若設定為 False，表示進行出現次數的加總
+        * original_list (list)：要讀取後進行所有金額加總的原始分析數據列表
 
     回傳：
-        * total (int)：按照原始項目順序加總後的列表，可作為後續顯示資產變化或繪製圖表時使用
+        * amount (int)：將分析數據列表進行金額加總後的數值，可作為後續顯示資產變化或顯示表格時使用
     """
-    # TODO amount=False 是否可以簡單換為 len(original_list)
-    total = int()  # 宣告空的回傳整數
+    amount = int()  # 宣告空的回傳整數
     for row in original_list:  # 對於數據列表中的每一筆帳目
-        total += (row[5] if amount else 1)  # 總和變數加上此帳目的 金額／次數
-    return total  # 回傳總和變數，可作為後續顯示資產變化或繪製圖表時使用
+        amount += row[5]  # 總和變數加上此帳目的金額
+    return amount  # 回傳總和變數，可作為後續顯示資產變化或顯示表格時使用
 
 
 def _sum_order_data(original_list, item_list, position, amount=True):
@@ -134,6 +132,7 @@ def _sum_order_data(original_list, item_list, position, amount=True):
     """
     data_list = list()  # 宣告空的回傳列表
 
+    # TODO: Google Gemini 建議可以使用 字典（Dictionary） 作為累加器，從而提升可讀性與降低時間／空間複雜度，是個未來可以研究與優化的方向
     # 遍歷 X 軸中的每一個 X 位置，計算對應的 Y 高度
     for item in item_list:
         total = 0  # 宣告該項目總金額的暫存總和變數
@@ -544,7 +543,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                 case 10:  # 時間10：結束程式運行
                     print("\n\033[38;5;197m收到您的要求，正在結束程序\033[0m\a\n")  # 輸出提示訊息與通知聲音
                     sys.exit(0)  # 呼叫系統正常結束本程式運行
-                case _:  # 其他錯誤的時間選擇輸入，應該不會走到這裡 #TODO Delete this after check
+                case _:  # 其他錯誤的時間選擇輸入，應該不會走到這裡 # TODO Delete this after check
                     print("\033[38;5;197m您的輸入內容出現錯誤，請檢查後輸入正確選項，現正返回「時間選擇平臺」\033[0m\a\n")  # 輸出提示訊息與通知聲音，讓使用者重新輸入
                     continue  # 回到「時間選擇平臺」
 
@@ -596,7 +595,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     print("編號    類別         金額        （次數）")  # 印出 金額／次數 總表的欄位
 
                     # 以分隔符方式輸出總計結果，使用到 分析金流名稱、總金額、總次數 參數（呼叫 sum_all_data() 計算給定期間的 總金額／總次數）
-                    print("  0   所有{}  NT${:11,} （{:5,}次）".format(analyze_flow, sum_all_data(temp_list), sum_all_data(temp_list, False)))
+                    print("  0   所有{}  NT${:11,} （{:5,}次）".format(analyze_flow, sum_all_amount(temp_list), len(temp_list)))
 
                     amount_list = _sum_order_data(temp_list, analyze_num, 1)  # 以類別為單位先進行暫存數據列表的金額加總後，存入金額數值列表
                     times_list = _sum_order_data(temp_list, analyze_num, 1, amount=False)  # 以類別為單位先進行暫存數據列表的次數加總後，存入次數數值列表

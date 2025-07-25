@@ -111,6 +111,7 @@ def sum_all_data(original_list, amount=True):
     回傳：
         * total (int)：按照原始項目順序加總後的列表，可作為後續顯示資產變化或繪製圖表時使用
     """
+    # TODO amount=False 是否可以簡單換為 len(original_list)
     total = int()  # 宣告空的回傳整數
     for row in original_list:  # 對於數據列表中的每一筆帳目
         total += (row[5] if amount else 1)  # 總和變數加上此帳目的 金額／次數
@@ -461,7 +462,7 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
 
     while True:  # 無窮迴圈，在必要時使用 return 離開迴圈
         temp_list = analyze_list  # 定義暫存數據列表，避免更改原始分析數據列表
-        line_list, line_axis, line_name = list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸數值、X 軸間距、X 軸標籤  # TODO: to be updated...
+        amount_list, times_list,line_axis, line_name = list(), list(), list(), list()  # 預先定義後續圖表使用的列表為空列表，包含 Y 軸金額、Y 軸次數、X 軸間距、X 軸標籤
 
         try:  # 由 Gemini Code Assist 提供建議，在主迴圈中捕捉例外與處理錯誤後，讓迴圈繼續迭代，符合 DRY 原則與提高可讀性
             print("\n這裡是「時間選擇平臺」，請選擇您想分析的時間段")  # 輸出「時間選擇平臺」的提示訊息
@@ -499,11 +500,11 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                             temp = [0, 0]  # 宣告該年月總金額與總次數的暫存總和列表
                             for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
                             for row in for_list:  # 對於符合目前遍歷進度的數據
-                                temp[1] += row[5]  # 該時間段的暫存金額總和加上此筆帳目的金額
-                                temp[2] += 1  # 該時間段的暫存次數總和加上代表此筆帳目的 1 次
+                                temp[0] += row[5]  # 該時間段的暫存金額總和加上此筆帳目的金額
+                                temp[1] += 1  # 該時間段的暫存次數總和加上代表此筆帳目的 1 次
                             line_name.append("{}-{}".format(y, m))  # 將該時間段的名稱加入 X 軸標籤列表的末尾
-                            amount_list.append(temp[1])  # 將該時間段的暫存金額總和加入 Y 軸金額列表的末尾
-                            times_list.append(temp[2])  # 將該時間段的暫存次數總和加入 Y 軸金額列表的末尾
+                            amount_list.append(temp[0])  # 將該時間段的暫存金額總和加入 Y 軸金額列表的末尾
+                            times_list.append(temp[1])  # 將該時間段的暫存次數總和加入 Y 軸金額列表的末尾
                 case 5:  # 時間5：特定年月的紀錄
                     # 呼叫 check_input() 函數讀取與檢查使用者輸入後存放至 年、月 變數，依序傳入 詢問內容、最小數值、最大數值
                     year = check_input("您想要分析哪一年的數據資料？")
@@ -668,12 +669,8 @@ def analyze(analyze_flow, analyze_list, analyze_cat, analyze_year, analyze_num):
                     # 遍歷給定時間段的所有年月，按照順序將相同年月的數據進行加總後存入後續圖表使用的 Y 軸次數列表，同時創造依照順序排列的 X 軸標籤列表
                     for y in analyze_year:
                         for m in month_list:
-                            temp = 0  # 宣告該年月總次數的暫存總和變數
-                            for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的專用列表，並且不要做空列表檢查
-                            for row in for_list:  # 對於符合目前遍歷進度的數據
-                                temp += 1  # 該時間段的暫存次數總和加上代表此筆帳目的 1 次
-                            amount_list.append(temp)  # 將該時間段的暫存次數總和加入 Y 軸次數列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
-                            #TODO: 是否可以直接改為 amount_list.append(len(for_list)) 以節省一個 for 迴圈與 temp 變數？
+                            for_list = _filter_data(temp_list, year=y, month=m, check=False)  # 以所需 年、月 變數過濾暫存數據列表，存入遍歷年月的迴圈專用列表，並且不要做空列表檢查
+                            amount_list.append(len(for_list))  # 將該時間段的暫存次數總和加入 Y 軸次數列表的末尾（不須再重複製造 X 軸間距與 X 軸標籤列表）
                     axis_line(amount_list, list(), line_name)  # 呼叫 Plot.py 中的 axis_line() 函數繪製折線圖，依序傳入 Y 軸次數、X 軸間距、X 軸標籤列表
                 case (5, 4):
                     amount_list = _sum_order_data(temp_list, day_list, 4, False)  # 以日為單位先進行暫存數據列表的次數加總後，存入後續圖表使用的 Y 軸次數列表

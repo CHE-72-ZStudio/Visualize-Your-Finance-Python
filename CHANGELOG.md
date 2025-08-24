@@ -1,6 +1,15 @@
 # 「帳目分析可視化程式（Python）」的變更日誌
 ## Change Log for Visualize Your Finance (Python)
 
+## UNRELEASED ~~V1.4.1 (2025-MM-DD)~~
+### 功能更改 Changed
+- 將 金額折線走勢圖／次數折線走勢圖 合併為同一張圖表，減少選單選項數量（尚未完成）
+### 文檔更新 Edited
+- 修正 `README.md` 與 `USER.md` 檔案中的描述
+- 完善 `DEVELOPER.md` 檔案中的描述
+### 貢獻清單 Contributor
+- [![CHE72](https://img.shields.io/badge/CHE72-181717.svg?logo=github&logoColor=white)](https://github.com/CHE72): 專案發起人／項目**唯一**貢獻者／項目**唯一**維護者
+
 ## V1.3.12 (2025-07-25) 新增分析方式與顯示效果再進化
 ### 新增功能 Added
 - 在 `Func.py` 中新增「總體次數折線走勢圖」、「各類次數折線走勢圖」、「總體金額／次數表格」的分析方式，使分析更為快速全面

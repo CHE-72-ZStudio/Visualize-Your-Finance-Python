@@ -14,7 +14,7 @@
 - **作業系統**：
     - Microsoft Windows 10+ 64位元（2004 以上版本）搭配 [Windows 終端機 (Windows Terminal)](https://aka.ms/terminal)
         - Windows 11+ 已預裝 Windows 終端機，無須另外安裝
-    - Apple macOS 搭配系統自帶的 終端機.app (Terminal.app)
+    - Apple macOS 10.9+ 搭配系統自帶的 終端機.app (Terminal.app)
     - Linux 搭配 [KDE 的 Konsole](https://konsole.kde.org/download.html)
 
 

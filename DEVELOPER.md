@@ -3,11 +3,11 @@
 
 ## 0. 目錄
 
-1. [環境需求](#1-環境需求-environment-requirements)
-2. [安裝配置](#2-安裝配置-installation--configuration)
-3. [基本使用](#3-基本使用-basic-usage)
-4. [檔案規範](#4-檔案規範-file-specifications)
-5. [專案結構](#5-專案結構-project-structure)
+1. [環境需求 Environment Requirements](#1-環境需求-environment-requirements)
+2. [安裝配置 Installation & Configuration](#2-安裝配置-installation--configuration)
+3. [基本使用 Basic Usage](#3-基本使用-basic-usage)
+4. [檔案規範 File Specifications](#4-檔案規範-file-specifications)
+5. [專案結構 Project Structure](#5-專案結構-project-structure)
 
 ---
 

@@ -310,6 +310,6 @@ Temporary Items
 
 ### Visualize-Your-Finance-Python template
 # Personal Record File and Log File
-Diagnosis.LOG
+VYFP_Diag.log
 *.csv
 !Example.csv
